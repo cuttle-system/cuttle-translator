@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(CuttleTranslator)
+project(CuttleTranslator VERSION 0.1 LANGUAGES CXX)
 
 include(CMakeToolsHelpers OPTIONAL)
 

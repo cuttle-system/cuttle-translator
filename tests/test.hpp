@@ -11,6 +11,9 @@
 #define AssertEqual(out, exp, message)					\
 	cuttle::_AssertTrue((out) == (exp), message,  __FILE__, __LINE__)
 
+#define AssertNotEqual(out, exp, message)					\
+	cuttle::_AssertTrue((out) != (exp), message,  __FILE__, __LINE__)
+
 namespace cuttle {
     void _AssertTrue(
         bool statement, const std::string& message, const char* file, int line
