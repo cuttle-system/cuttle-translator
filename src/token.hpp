@@ -5,9 +5,9 @@
 
 namespace cuttle {
 	enum token_type {
-		NUMBER_TOKEN,
+		ATOM_TOKEN,
 		STRING_TOKEN,
-		ATOM_TOKEN
+		NUMBER_TOKEN
 	};
 
 	using token_t = struct token {
