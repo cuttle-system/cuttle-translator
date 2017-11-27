@@ -165,20 +165,21 @@ inline void test_translates_nested_function_call() {
 			{ NUMBER_TOKEN, "3", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{2}, {}, { 1, 3 },{},
-			{ 2, 4 },{}
+			{4}, {}, { 1, 3 },{},
+			{ 2, 5 },{}
 			} };
 		values_t values;
 		call_tree_t new_tree;
 		translate(translator, tokens, tree, values, new_tree);
 		AssertEqual(new_tree.src, (tree_src_t{
-			{2}, { 2, 3 }, {}, {},
-			{ 1, 5 },{}
+			{1}, { 2, 5 }, {3, 4}, {},
+			{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
 			{"foo", TYPE_FUNCTION_NAME },
-			{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER },
-			{ "minus", TYPE_FUNCTION_NAME },{ "3", TYPE_NUMBER }
+			{ "minus", TYPE_FUNCTION_NAME },
+			{ "+", TYPE_FUNCTION_NAME },
+			{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER },{ "3", TYPE_NUMBER }
 		}), "Values");
 	}
 }

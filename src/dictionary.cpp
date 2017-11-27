@@ -8,26 +8,34 @@ void cuttle::add(cuttle::dictionary_t& dictionary, std::string name, cuttle::arg
 }
 
 int cuttle::dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS) {
-	size_t new_size = new_index + tree.src[index].size() + 1;
-	int function_index = new_index;
-	
-	if (values.size() < new_size) {
-		values.resize(new_size);
-	}
-	if (new_tree.src.size() < new_size) {
-		new_tree.src.resize(new_size);
+	using namespace cuttle;
+
+	int function_index;
+
+	if (index_reference.find(index) == index_reference.end()) {
+		function_index = new_index;
+		values.push_back({ tokens[index].value, TYPE_FUNCTION_NAME });
+		new_tree.src.push_back({});
+		index_reference[index] = new_index;
+		++new_index;
+	} else {
+		function_index = index_reference[index];
 	}
 
-	values[function_index] = { tokens[index].value, TYPE_FUNCTION_NAME };
 	new_tree.src[function_index].resize(tree.src[index].size());
-	++new_index;
 	
 	for (int i = 0; i < tree.src[index].size(); ++i) {
 		auto arg_index = tree.src[index][i];
-		token_t token = tokens[arg_index];
-		values[new_index] = { token.value, value_from_token_type(token.type) };
-		new_tree.src[function_index][i] = new_index;
-		++new_index;
+		if (index_reference.find(arg_index) == index_reference.end()) {
+			token_t token = tokens[arg_index];
+			values.push_back({ token.value, value_from_token_type(token.type) });
+			new_tree.src[function_index][i] = new_index;
+			new_tree.src.push_back({});
+			index_reference[arg_index] = new_index;
+			++new_index;
+		} else {
+			new_tree.src[function_index][i] = index_reference[arg_index];
+		}
 	}
 
 	return function_index;

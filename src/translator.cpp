@@ -7,14 +7,15 @@ void cuttle::translate(
 
 	dictionary_t dictionary = translator.dictionary;
 	int new_index = 0;
+	index_reference_t index_reference;
 
 	for (int index = 0; index < tree.src.size(); ++index) {
 		token_t token = tokens[index];
 		if (token.type == ATOM_TOKEN) {
 			if (dictionary.find(token.value) != dictionary.end()) {
-				dictionary[token.value][tree.src[index].size()](tokens, tree, index, values, new_tree, new_index);
+				dictionary[token.value][tree.src[index].size()](tokens, tree, index, values, new_tree, new_index, index_reference);
 			} else {
-				dictionary_funcs::copy(tokens, tree, index, values, new_tree, new_index);
+				dictionary_funcs::copy(tokens, tree, index, values, new_tree, new_index, index_reference);
 			}
 		}
 	}
