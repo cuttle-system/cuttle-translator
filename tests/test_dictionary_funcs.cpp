@@ -256,9 +256,53 @@ inline void test_value_functions() {
 	}
 }
 
+inline void test_add_function_function() {
+	{
+		values_t values = { {"foo", TYPE_FUNCTION_NAME},{ "1", TYPE_NUMBER },{"2", TYPE_NUMBER} };
+		call_tree_t new_tree = { { {}, {}, {} } };
+		int new_index = 3;
+
+		auto ret = dictionary_funcs::function(values, new_tree, new_index, 0, { 1, 2 });
+		AssertEqual(ret, 0, "Return value");
+		AssertEqual(new_index, 3, "New index");
+		AssertEqual(new_tree.src, (tree_src_t{
+			{1, 2},{},{}
+		}), "New tree");
+		AssertEqual(values, (values_t{
+			{ { "foo", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } }
+		}), "Values");
+	}
+	{
+		values_t values = { {"foo", TYPE_FUNCTION_NAME}, { "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } };
+		call_tree_t new_tree = { { {},{},{},{} } };
+		int new_index = 4;
+
+		auto ret1 = dictionary_funcs::function(values, new_tree, new_index, 1, {2, 3});
+		AssertEqual(ret1, 1, "Return value");
+		AssertEqual(new_index, 4, "New index");
+		AssertEqual(new_tree.src, (tree_src_t{
+			{},{2, 3},{},{}
+		}), "New tree");
+		AssertEqual(values, (values_t{
+			{ { "foo", TYPE_FUNCTION_NAME },{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } }
+		}), "Values");
+
+		auto ret2 = dictionary_funcs::function(values, new_tree, new_index, 0, {1});
+		AssertEqual(ret2, 0, "Return value");
+		AssertEqual(new_index, 4, "New index");
+		AssertEqual(new_tree.src, (tree_src_t{
+			{1},{ 2, 3 },{},{}
+		}), "New tree");
+		AssertEqual(values, (values_t{
+			{ { "foo", TYPE_FUNCTION_NAME },{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } }
+		}), "Values");
+	}
+}
+
 void run_dictionary_funcs_tests() {
     TESTCASE
     test_copy_basic_function();
 	test_copy_nested_functions();
 	test_value_functions();
+	test_add_function_function();
 }

@@ -37,5 +37,7 @@ namespace cuttle {
 		int function_name(TRANSLATE_OUTPUT_ARGS, std::string value);
 		int string(TRANSLATE_OUTPUT_ARGS, std::string value);
 		int number(TRANSLATE_OUTPUT_ARGS, std::string value);
+
+		int function(TRANSLATE_OUTPUT_ARGS, int function_name_index, std::initializer_list<int> args_indexes);
 	}
 }

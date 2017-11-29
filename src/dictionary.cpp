@@ -27,6 +27,11 @@ int cuttle::dictionary_funcs::number(TRANSLATE_OUTPUT_ARGS, std::string value) {
 	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_NUMBER);
 }
 
+int cuttle::dictionary_funcs::function(TRANSLATE_OUTPUT_ARGS, int function_name_index, std::initializer_list<int> args_indexes) {
+	new_tree.src[function_name_index] = args_indexes;
+	return function_name_index;
+}
+
 int cuttle::dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS) {
 	using namespace cuttle;
 
