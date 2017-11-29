@@ -7,6 +7,26 @@ void cuttle::add(cuttle::dictionary_t& dictionary, std::string name, cuttle::arg
 	dictionary[name][arg_number] = function;
 }
 
+int cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS, std::string value, enum cuttle::value_type type) {
+	using namespace cuttle;
+
+	new_tree.src.push_back({});
+	values.push_back({ value, type });
+	return new_index++;
+}
+
+int cuttle::dictionary_funcs::function_name(TRANSLATE_OUTPUT_ARGS, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_FUNCTION_NAME);
+}
+
+int cuttle::dictionary_funcs::string(TRANSLATE_OUTPUT_ARGS, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_STRING);
+}
+
+int cuttle::dictionary_funcs::number(TRANSLATE_OUTPUT_ARGS, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_NUMBER);
+}
+
 int cuttle::dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS) {
 	using namespace cuttle;
 

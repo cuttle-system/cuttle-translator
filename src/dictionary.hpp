@@ -6,8 +6,21 @@
 #include "value.hpp"
 #include "token.hpp"
 
-#define TRANSLATE_FUNCTION_ARGS const tokens_t& tokens, const call_tree_t& tree, int index, values_t& values, call_tree_t& new_tree, int& new_index, index_reference_t& index_reference 
-#define TRANSLATE_FUNCTION_ARGS_NO_TYPE tokens, tree, index, values, new_tree, new_index, index_reference
+#define TRANSLATE_INPUT_ARGS const tokens_t& tokens, const call_tree_t& tree, int index
+#define TRANSLATE_INPUT_ARGS_NO_TYPE tokens, tree, index
+
+#define TRANSLATE_OUTPUT_ARGS values_t& values, call_tree_t& new_tree, int& new_index
+#define TRANSLATE_OUTPUT_ARGS_NO_TYPE values, new_tree, new_index
+
+#define TRANSLATE_ARGS_ENV_ARGS index_reference_t& index_reference
+#define TRANSLATE_ARGS_ENV_ARGS_NO_TYPE index_reference
+
+#define TRANSLATE_OUTPUT_ENV_ARGS TRANSLATE_OUTPUT_ARGS, TRANSLATE_ARGS_ENV_ARGS
+#define TRANSLATE_OUTPUT_ENV_ARGS_NO_TYPE TRANSLATE_OUTPUT_ARGS_NO_TYPE, TRANSLATE_ARGS_ENV_ARGS_NO_TYPE
+
+#define TRANSLATE_FUNCTION_ARGS TRANSLATE_INPUT_ARGS, TRANSLATE_OUTPUT_ENV_ARGS
+#define TRANSLATE_FUNCTION_ARGS_NO_TYPE TRANSLATE_INPUT_ARGS_NO_TYPE, TRANSLATE_OUTPUT_ENV_ARGS_NO_TYPE
+
 
 namespace cuttle {
 	using index_reference_t = std::map<int, int>;
@@ -19,5 +32,10 @@ namespace cuttle {
 
 	namespace dictionary_funcs {
 		int copy(TRANSLATE_FUNCTION_ARGS);
+
+		int value(TRANSLATE_OUTPUT_ARGS, std::string value, enum value_type type);
+		int function_name(TRANSLATE_OUTPUT_ARGS, std::string value);
+		int string(TRANSLATE_OUTPUT_ARGS, std::string value);
+		int number(TRANSLATE_OUTPUT_ARGS, std::string value);
 	}
 }
