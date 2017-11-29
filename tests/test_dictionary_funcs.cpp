@@ -299,10 +299,56 @@ inline void test_add_function_function() {
 	}
 }
 
+inline void test_basic_interface() {
+	{
+		values_t values;
+		call_tree_t new_tree;
+		int new_index = 0;
+
+		using namespace dictionary_funcs;
+
+		auto ret = function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "foo"), {
+			number(TRANS_OUT_ARGS, "1"),
+			number(TRANS_OUT_ARGS, "2"),
+		});
+		AssertEqual(ret, 2, "Return value");
+		AssertEqual(new_index, 3, "New index");
+		AssertEqual(new_tree.src, (tree_src_t{
+			{},{},{ 0, 1 }
+		}), "New tree");
+		AssertEqual(values, (values_t{
+			{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } ,{ "foo", TYPE_FUNCTION_NAME }
+		}), "Values");
+	}
+	{
+		values_t values;
+		call_tree_t new_tree;
+		int new_index = 0;
+
+		using namespace dictionary_funcs;
+
+		auto ret = function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "foo"), {
+			function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "+"), {
+				number(TRANS_OUT_ARGS, "1"),
+				number(TRANS_OUT_ARGS, "2")
+			})
+		});
+		AssertEqual(ret, 3, "Return value");
+		AssertEqual(new_index, 4, "New index");
+		AssertEqual(new_tree.src, (tree_src_t{
+			{},{}, { 0, 1 },{2}
+		}), "New tree");
+		AssertEqual(values, (values_t{
+			{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER },{ "+", TYPE_FUNCTION_NAME },{ "foo", TYPE_FUNCTION_NAME }
+		}), "Values");
+	}
+}
+
 void run_dictionary_funcs_tests() {
     TESTCASE
     test_copy_basic_function();
 	test_copy_nested_functions();
 	test_value_functions();
 	test_add_function_function();
+	test_basic_interface();
 }

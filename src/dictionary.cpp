@@ -7,7 +7,7 @@ void cuttle::add(cuttle::dictionary_t& dictionary, std::string name, cuttle::arg
 	dictionary[name][arg_number] = function;
 }
 
-int cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS, std::string value, enum cuttle::value_type type) {
+int cuttle::dictionary_funcs::value(TRANS_OUT_ARGS_DEF, std::string value, enum cuttle::value_type type) {
 	using namespace cuttle;
 
 	new_tree.src.push_back({});
@@ -15,24 +15,24 @@ int cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS, std::string value, en
 	return new_index++;
 }
 
-int cuttle::dictionary_funcs::function_name(TRANSLATE_OUTPUT_ARGS, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_FUNCTION_NAME);
+int cuttle::dictionary_funcs::function_name(TRANS_OUT_ARGS_DEF, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_FUNCTION_NAME);
 }
 
-int cuttle::dictionary_funcs::string(TRANSLATE_OUTPUT_ARGS, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_STRING);
+int cuttle::dictionary_funcs::string(TRANS_OUT_ARGS_DEF, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_STRING);
 }
 
-int cuttle::dictionary_funcs::number(TRANSLATE_OUTPUT_ARGS, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANSLATE_OUTPUT_ARGS_NO_TYPE, value, TYPE_NUMBER);
+int cuttle::dictionary_funcs::number(TRANS_OUT_ARGS_DEF, std::string value) {
+	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_NUMBER);
 }
 
-int cuttle::dictionary_funcs::function(TRANSLATE_OUTPUT_ARGS, int function_name_index, std::initializer_list<int> args_indexes) {
+int cuttle::dictionary_funcs::function(TRANS_OUT_ARGS_DEF, int function_name_index, std::initializer_list<int> args_indexes) {
 	new_tree.src[function_name_index] = args_indexes;
 	return function_name_index;
 }
 
-int cuttle::dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS) {
+int cuttle::dictionary_funcs::copy(TRANS_FUN_ARGS_DEF) {
 	using namespace cuttle;
 
 	int function_index;

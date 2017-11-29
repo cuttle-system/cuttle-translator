@@ -6,13 +6,13 @@ using namespace cuttle;
 
 inline void test_translates_basic_function_call() {
 	dictionary_t dictionary;
-	add(dictionary, "plus", 2, [](TRANSLATE_FUNCTION_ARGS) {
-		auto i = dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS_NO_TYPE);
+	add(dictionary, "plus", 2, [](TRANS_FUN_ARGS_DEF) {
+		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
 		values[i].value = "+";
 		return i;
 	});
-	add(dictionary, "-", 2, [](TRANSLATE_FUNCTION_ARGS) {
-		auto i = dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS_NO_TYPE);
+	add(dictionary, "-", 2, [](TRANS_FUN_ARGS_DEF) {
+		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
 		values[i].value = "minus";
 		return i;
 	});
@@ -118,13 +118,13 @@ inline void test_translates_basic_function_call() {
 
 inline void test_translates_nested_function_call() {
 	dictionary_t dictionary;
-	add(dictionary, "plus", 2, [](TRANSLATE_FUNCTION_ARGS) {
-		auto i = dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS_NO_TYPE);
+	add(dictionary, "plus", 2, [](TRANS_FUN_ARGS_DEF) {
+		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
 		values[i].value = "+";
 		return i;
 	});
-	add(dictionary, "-", 2, [](TRANSLATE_FUNCTION_ARGS) {
-		auto i = dictionary_funcs::copy(TRANSLATE_FUNCTION_ARGS_NO_TYPE);
+	add(dictionary, "-", 2, [](TRANS_FUN_ARGS_DEF) {
+		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
 		values[i].value = "minus";
 		return i;
 	});
