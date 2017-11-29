@@ -6,14 +6,14 @@ using namespace cuttle;
 
 inline void test_translates_basic_function_call() {
 	dictionary_t dictionary;
-	add(dictionary, "plus", 2, [](TRANS_FUN_ARGS_DEF) {
-		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
-		values[i].value = "+";
+	add(dictionary, "plus", 2, [](translate_state_t& state) {
+		auto i = dictionary_funcs::copy(state);
+		state.values[i].value = "+";
 		return i;
 	});
-	add(dictionary, "-", 2, [](TRANS_FUN_ARGS_DEF) {
-		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
-		values[i].value = "minus";
+	add(dictionary, "-", 2, [](translate_state_t& state) {
+		auto i = dictionary_funcs::copy(state);
+		state.values[i].value = "minus";
 		return i;
 	});
 
@@ -118,14 +118,14 @@ inline void test_translates_basic_function_call() {
 
 inline void test_translates_nested_function_call() {
 	dictionary_t dictionary;
-	add(dictionary, "plus", 2, [](TRANS_FUN_ARGS_DEF) {
-		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
-		values[i].value = "+";
+	add(dictionary, "plus", 2, [](translate_state_t& state) {
+		auto i = dictionary_funcs::copy(state);
+		state.values[i].value = "+";
 		return i;
 	});
-	add(dictionary, "-", 2, [](TRANS_FUN_ARGS_DEF) {
-		auto i = dictionary_funcs::copy(TRANS_FUN_ARGS);
-		values[i].value = "minus";
+	add(dictionary, "-", 2, [](translate_state_t& state) {
+		auto i = dictionary_funcs::copy(state);
+		state.values[i].value = "minus";
 		return i;
 	});
 

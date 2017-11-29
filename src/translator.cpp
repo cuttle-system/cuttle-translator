@@ -1,4 +1,5 @@
 #include "translator.hpp"
+#include "translate_state.hpp"
 
 void cuttle::translate(
 	const cuttle::translator_t & translator, const cuttle::tokens_t & tokens, const cuttle::call_tree_t & tree, cuttle::values_t & values, cuttle::call_tree_t & new_tree
@@ -8,14 +9,17 @@ void cuttle::translate(
 	dictionary_t dictionary = translator.dictionary;
 	int new_index = 0;
 	index_reference_t index_reference;
+	translate_state_t state = {
+		tokens, tree, 0, values, new_tree, new_index, index_reference
+	};
 
-	for (int index = 0; index < tree.src.size(); ++index) {
-		token_t token = tokens[index];
+	for (state.index = 0; state.index < tree.src.size(); ++state.index) {
+		token_t token = tokens[state.index];
 		if (token.type == ATOM_TOKEN) {
 			if (dictionary.find(token.value) != dictionary.end()) {
-				dictionary[token.value][tree.src[index].size()](tokens, tree, index, values, new_tree, new_index, index_reference);
+				dictionary[token.value][tree.src[state.index].size()](state);
 			} else {
-				dictionary_funcs::copy(tokens, tree, index, values, new_tree, new_index, index_reference);
+				dictionary_funcs::copy(state);
 			}
 		}
 	}

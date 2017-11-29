@@ -7,59 +7,59 @@ void cuttle::add(cuttle::dictionary_t& dictionary, std::string name, cuttle::arg
 	dictionary[name][arg_number] = function;
 }
 
-int cuttle::dictionary_funcs::value(TRANS_OUT_ARGS_DEF, std::string value, enum cuttle::value_type type) {
+int cuttle::dictionary_funcs::value(translate_state_t& state, std::string value, enum cuttle::value_type type) {
 	using namespace cuttle;
 
-	new_tree.src.push_back({});
-	values.push_back({ value, type });
-	return new_index++;
+	state.new_tree.src.push_back({});
+	state.values.push_back({ value, type });
+	return state.new_index++;
 }
 
-int cuttle::dictionary_funcs::function_name(TRANS_OUT_ARGS_DEF, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_FUNCTION_NAME);
+int cuttle::dictionary_funcs::function_name(translate_state_t& state, std::string value) {
+	return cuttle::dictionary_funcs::value(state, value, TYPE_FUNCTION_NAME);
 }
 
-int cuttle::dictionary_funcs::string(TRANS_OUT_ARGS_DEF, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_STRING);
+int cuttle::dictionary_funcs::string(translate_state_t& state, std::string value) {
+	return cuttle::dictionary_funcs::value(state, value, TYPE_STRING);
 }
 
-int cuttle::dictionary_funcs::number(TRANS_OUT_ARGS_DEF, std::string value) {
-	return cuttle::dictionary_funcs::value(TRANS_OUT_ARGS, value, TYPE_NUMBER);
+int cuttle::dictionary_funcs::number(translate_state_t& state, std::string value) {
+	return cuttle::dictionary_funcs::value(state, value, TYPE_NUMBER);
 }
 
-int cuttle::dictionary_funcs::function(TRANS_OUT_ARGS_DEF, int function_name_index, std::initializer_list<int> args_indexes) {
-	new_tree.src[function_name_index] = args_indexes;
+int cuttle::dictionary_funcs::function(translate_state_t& state, int function_name_index, std::initializer_list<int> args_indexes) {
+	state.new_tree.src[function_name_index] = args_indexes;
 	return function_name_index;
 }
 
-int cuttle::dictionary_funcs::copy(TRANS_FUN_ARGS_DEF) {
+int cuttle::dictionary_funcs::copy(translate_state_t& state) {
 	using namespace cuttle;
 
 	int function_index;
 
-	if (index_reference.find(index) == index_reference.end()) {
-		function_index = new_index;
-		values.push_back({ tokens[index].value, TYPE_FUNCTION_NAME });
-		new_tree.src.push_back({});
-		index_reference[index] = new_index;
-		++new_index;
+	if (state.index_reference.find(state.index) == state.index_reference.end()) {
+		function_index = state.new_index;
+		state.values.push_back({ state.tokens[state.index].value, TYPE_FUNCTION_NAME });
+		state.new_tree.src.push_back({});
+		state.index_reference[state.index] = state.new_index;
+		++state.new_index;
 	} else {
-		function_index = index_reference[index];
+		function_index = state.index_reference[state.index];
 	}
 
-	new_tree.src[function_index].resize(tree.src[index].size());
+	state.new_tree.src[function_index].resize(state.tree.src[state.index].size());
 	
-	for (int i = 0; i < tree.src[index].size(); ++i) {
-		auto arg_index = tree.src[index][i];
-		if (index_reference.find(arg_index) == index_reference.end()) {
-			token_t token = tokens[arg_index];
-			values.push_back({ token.value, value_from_token_type(token.type) });
-			new_tree.src[function_index][i] = new_index;
-			new_tree.src.push_back({});
-			index_reference[arg_index] = new_index;
-			++new_index;
+	for (int i = 0; i < state.tree.src[state.index].size(); ++i) {
+		auto arg_index = state.tree.src[state.index][i];
+		if (state.index_reference.find(arg_index) == state.index_reference.end()) {
+			token_t token = state.tokens[arg_index];
+			state.values.push_back({ token.value, value_from_token_type(token.type) });
+			state.new_tree.src[function_index][i] = state.new_index;
+			state.new_tree.src.push_back({});
+			state.index_reference[arg_index] = state.new_index;
+			++state.new_index;
 		} else {
-			new_tree.src[function_index][i] = index_reference[arg_index];
+			state.new_tree.src[function_index][i] = state.index_reference[arg_index];
 		}
 	}
 

@@ -18,7 +18,10 @@ inline void test_copy_basic_function() {
 		call_tree_t new_tree;
 		int new_index = 0;
 		index_reference_t index_reference;
-		auto ret = dictionary_funcs::copy(tokens, tree, 1, values, new_tree, new_index, index_reference);
+		translate_state_t state = {
+			tokens, tree, 1, values, new_tree, new_index, index_reference
+		};
+		auto ret = dictionary_funcs::copy(state);
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -47,7 +50,10 @@ inline void test_copy_basic_function() {
 		call_tree_t new_tree;
 		int new_index = 0;
 		index_reference_t index_reference;
-		auto ret = dictionary_funcs::copy(tokens, tree, 0, values, new_tree, new_index, index_reference);
+		translate_state_t state = {
+			tokens, tree, 0, values, new_tree, new_index, index_reference
+		};
+		auto ret = dictionary_funcs::copy(state);
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -75,7 +81,10 @@ inline void test_copy_basic_function() {
 		call_tree_t new_tree;
 		int new_index = 0;
 		index_reference_t index_reference;
-		auto ret = dictionary_funcs::copy(tokens, tree, 1, values, new_tree, new_index, index_reference);
+		translate_state_t state = {
+			tokens, tree, 1, values, new_tree, new_index, index_reference
+		};
+		auto ret = dictionary_funcs::copy(state);
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 2, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -102,7 +111,10 @@ inline void test_copy_basic_function() {
 		call_tree_t new_tree;
 		int new_index = 0;
 		index_reference_t index_reference;
-		auto ret = dictionary_funcs::copy(tokens, tree, 0, values, new_tree, new_index, index_reference);
+		translate_state_t state = {
+			tokens, tree, 0, values, new_tree, new_index, index_reference
+		};
+		auto ret = dictionary_funcs::copy(state);
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -137,8 +149,11 @@ inline void test_copy_nested_functions() {
 		call_tree_t new_tree;
 		int new_index = 0;
 		index_reference_t index_reference;
-		
-		auto ret1 = dictionary_funcs::copy(tokens, tree, 3, values, new_tree, new_index, index_reference);
+		translate_state_t state = {
+			tokens, tree, 3, values, new_tree, new_index, index_reference
+		};
+
+		auto ret1 = dictionary_funcs::copy(state);
 		AssertEqual(ret1, 0, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -156,7 +171,8 @@ inline void test_copy_nested_functions() {
 		AssertEqual(index_reference[3], 0, "Index reference");
 		AssertEqual(index_reference[4], 2, "Index reference");
 
-		auto ret2 = dictionary_funcs::copy(tokens, tree, 1, values, new_tree, new_index, index_reference);
+		state.index = 1;
+		auto ret2 = dictionary_funcs::copy(state);
 		AssertEqual(ret2, 1, "Return value");
 		AssertEqual(new_index, 5, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -183,8 +199,12 @@ inline void test_value_functions() {
 		values_t values;
 		call_tree_t new_tree;
 		int new_index = 0;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
-		auto ret = dictionary_funcs::value(values, new_tree, new_index, "1", TYPE_NUMBER);
+		auto ret = dictionary_funcs::value(state, "1", TYPE_NUMBER);
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 1, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -198,8 +218,12 @@ inline void test_value_functions() {
 		values_t values;
 		call_tree_t new_tree;
 		int new_index = 0;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
-		auto ret1 = dictionary_funcs::value(values, new_tree, new_index, "1", TYPE_NUMBER);
+		auto ret1 = dictionary_funcs::value(state, "1", TYPE_NUMBER);
 		AssertEqual(ret1, 0, "Return value");
 		AssertEqual(new_index, 1, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -209,7 +233,7 @@ inline void test_value_functions() {
 			{ "1", TYPE_NUMBER }
 		}), "Values");
 
-		auto ret2 = dictionary_funcs::value(values, new_tree, new_index, "foo", TYPE_FUNCTION_NAME);
+		auto ret2 = dictionary_funcs::value(state, "foo", TYPE_FUNCTION_NAME);
 		AssertEqual(ret2, 1, "Return value");
 		AssertEqual(new_index, 2, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -223,8 +247,12 @@ inline void test_value_functions() {
 		values_t values;
 		call_tree_t new_tree;
 		int new_index = 0;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
-		auto ret1 = dictionary_funcs::number(values, new_tree, new_index, "1");
+		auto ret1 = dictionary_funcs::number(state, "1");
 		AssertEqual(ret1, 0, "Return value");
 		AssertEqual(new_index, 1, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -234,7 +262,7 @@ inline void test_value_functions() {
 			{ "1", TYPE_NUMBER }
 		}), "Values");
 
-		auto ret2 = dictionary_funcs::function_name(values, new_tree, new_index, "foo");
+		auto ret2 = dictionary_funcs::function_name(state, "foo");
 		AssertEqual(ret2, 1, "Return value");
 		AssertEqual(new_index, 2, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -244,7 +272,7 @@ inline void test_value_functions() {
 			{ "1", TYPE_NUMBER },{ "foo", TYPE_FUNCTION_NAME }
 		}), "Values");
 
-		auto ret3 = dictionary_funcs::string(values, new_tree, new_index, "foo bar");
+		auto ret3 = dictionary_funcs::string(state, "foo bar");
 		AssertEqual(ret3, 2, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -261,8 +289,12 @@ inline void test_add_function_function() {
 		values_t values = { {"foo", TYPE_FUNCTION_NAME},{ "1", TYPE_NUMBER },{"2", TYPE_NUMBER} };
 		call_tree_t new_tree = { { {}, {}, {} } };
 		int new_index = 3;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
-		auto ret = dictionary_funcs::function(values, new_tree, new_index, 0, { 1, 2 });
+		auto ret = dictionary_funcs::function(state, 0, { 1, 2 });
 		AssertEqual(ret, 0, "Return value");
 		AssertEqual(new_index, 3, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -276,8 +308,12 @@ inline void test_add_function_function() {
 		values_t values = { {"foo", TYPE_FUNCTION_NAME}, { "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } };
 		call_tree_t new_tree = { { {},{},{},{} } };
 		int new_index = 4;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
-		auto ret1 = dictionary_funcs::function(values, new_tree, new_index, 1, {2, 3});
+		auto ret1 = dictionary_funcs::function(state, 1, {2, 3});
 		AssertEqual(ret1, 1, "Return value");
 		AssertEqual(new_index, 4, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -287,7 +323,7 @@ inline void test_add_function_function() {
 			{ { "foo", TYPE_FUNCTION_NAME },{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER } }
 		}), "Values");
 
-		auto ret2 = dictionary_funcs::function(values, new_tree, new_index, 0, {1});
+		auto ret2 = dictionary_funcs::function(state, 0, {1});
 		AssertEqual(ret2, 0, "Return value");
 		AssertEqual(new_index, 4, "New index");
 		AssertEqual(new_tree.src, (tree_src_t{
@@ -304,12 +340,16 @@ inline void test_basic_interface() {
 		values_t values;
 		call_tree_t new_tree;
 		int new_index = 0;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
 		using namespace dictionary_funcs;
 
-		auto ret = function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "foo"), {
-			number(TRANS_OUT_ARGS, "1"),
-			number(TRANS_OUT_ARGS, "2"),
+		auto ret = function(state, function_name(state, "foo"), {
+			number(state, "1"),
+			number(state, "2"),
 		});
 		AssertEqual(ret, 2, "Return value");
 		AssertEqual(new_index, 3, "New index");
@@ -324,13 +364,17 @@ inline void test_basic_interface() {
 		values_t values;
 		call_tree_t new_tree;
 		int new_index = 0;
+		index_reference_t index_reference;
+		translate_state_t state = {
+			{},{}, 0, values, new_tree, new_index, index_reference
+		};
 
 		using namespace dictionary_funcs;
 
-		auto ret = function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "foo"), {
-			function(TRANS_OUT_ARGS, function_name(TRANS_OUT_ARGS, "+"), {
-				number(TRANS_OUT_ARGS, "1"),
-				number(TRANS_OUT_ARGS, "2")
+		auto ret = function(state, function_name(state, "foo"), {
+			function(state, function_name(state, "+"), {
+				number(state, "1"),
+				number(state, "2")
 			})
 		});
 		AssertEqual(ret, 3, "Return value");
