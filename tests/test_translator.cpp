@@ -1,6 +1,9 @@
 #include <iostream>
 #include "test.hpp"
-#include "translator.hpp"
+#include "translator_methods.hpp"
+#include "dictionary_methods.hpp"
+#include "dictionary_funcs.hpp"
+#include "value_methods.hpp"
 
 using namespace cuttle;
 
@@ -21,9 +24,9 @@ inline void test_translates_basic_function_call() {
 
 	{
 		tokens_t tokens = {
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ ATOM_TOKEN, "plus", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 }
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::atom, "plus", 0, 0 },
+			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{}, {0, 2}, {}
@@ -35,14 +38,14 @@ inline void test_translates_basic_function_call() {
 			{1, 2}, {}, {}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{"+", TYPE_FUNCTION_NAME}, {"1", TYPE_NUMBER}, {"2", TYPE_NUMBER}
+			{"+", value_type::func_name}, {"1", value_type::number}, {"2", value_type::number}
 		}), "Values");
 	}
 	{
 		tokens_t tokens = {
-			{ ATOM_TOKEN, "plus", 0, 0 },
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 }
+			{ token_type::atom, "plus", 0, 0 },
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{ 1, 2 }, {},{}
@@ -54,14 +57,14 @@ inline void test_translates_basic_function_call() {
 			{ 1, 2 },{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER }
+			{ "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
 		}), "Values");
 	}
 	{
 		tokens_t tokens = {
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ ATOM_TOKEN, "-", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 }
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::atom, "-", 0, 0 },
+			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{},{ 0, 2 },{}
@@ -73,14 +76,14 @@ inline void test_translates_basic_function_call() {
 			{ 1, 2 },{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{ "minus", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER }
+			{ "minus", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
 		}), "Values");
 	}
 	{
 		tokens_t tokens = {
-			{ ATOM_TOKEN, "-", 0, 0 },
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 }
+			{ token_type::atom, "-", 0, 0 },
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{ 1, 2 },{},{}
@@ -92,14 +95,14 @@ inline void test_translates_basic_function_call() {
 			{ 1, 2 },{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{ "minus", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER }
+			{ "minus", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
 		}), "Values");
 	}
 	{
 		tokens_t tokens = {
-			{ ATOM_TOKEN, "foo", 0, 0 },
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 }
+			{ token_type::atom, "foo", 0, 0 },
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{ 1, 2 },{},{}
@@ -111,7 +114,7 @@ inline void test_translates_basic_function_call() {
 			{ 1, 2 },{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{ "foo", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER }
+			{ "foo", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
 		}), "Values");
 	}
 }
@@ -133,11 +136,11 @@ inline void test_translates_nested_function_call() {
 
 	{
 		tokens_t tokens = {
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ ATOM_TOKEN, "plus", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 },
-			{ ATOM_TOKEN, "-", 0, 0 },
-			{ NUMBER_TOKEN, "3", 0, 0 }
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::atom, "plus", 0, 0 },
+			{ token_type::number, "2", 0, 0 },
+			{ token_type::atom, "-", 0, 0 },
+			{ token_type::number, "3", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{},{ 0, 2 },{},
@@ -151,18 +154,18 @@ inline void test_translates_nested_function_call() {
 			{0, 4},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{ "+", TYPE_FUNCTION_NAME },{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER },
-			{ "minus", TYPE_FUNCTION_NAME }, { "3", TYPE_NUMBER }
+			{ "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number },
+			{ "minus", value_type::func_name }, { "3", value_type::number }
 		}), "Values");
 	}
 	{
 		tokens_t tokens = {
-			{ ATOM_TOKEN, "foo", 0, 0 },
-			{ NUMBER_TOKEN, "1", 0, 0 },
-			{ ATOM_TOKEN, "plus", 0, 0 },
-			{ NUMBER_TOKEN, "2", 0, 0 },
-			{ ATOM_TOKEN, "-", 0, 0 },
-			{ NUMBER_TOKEN, "3", 0, 0 }
+			{ token_type::atom, "foo", 0, 0 },
+			{ token_type::number, "1", 0, 0 },
+			{ token_type::atom, "plus", 0, 0 },
+			{ token_type::number, "2", 0, 0 },
+			{ token_type::atom, "-", 0, 0 },
+			{ token_type::number, "3", 0, 0 }
 		};
 		call_tree_t tree = { {
 			{4}, {}, { 1, 3 },{},
@@ -176,10 +179,10 @@ inline void test_translates_nested_function_call() {
 			{},{}
 		}), "New tree");
 		AssertEqual(values, (values_t{
-			{"foo", TYPE_FUNCTION_NAME },
-			{ "minus", TYPE_FUNCTION_NAME },
-			{ "+", TYPE_FUNCTION_NAME },
-			{ "1", TYPE_NUMBER },{ "2", TYPE_NUMBER },{ "3", TYPE_NUMBER }
+			{"foo", value_type::func_name },
+			{ "minus", value_type::func_name },
+			{ "+", value_type::func_name },
+			{ "1", value_type::number },{ "2", value_type::number },{ "3", value_type::number }
 		}), "Values");
 	}
 }

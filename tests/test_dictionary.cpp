@@ -1,6 +1,6 @@
 #include <iostream>
 #include "test.hpp"
-#include "dictionary.hpp"
+#include "dictionary_methods.hpp"
 #include "translate_state.hpp"
 
 using namespace cuttle;

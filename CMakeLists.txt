@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(CuttleTranslator VERSION 0.1 LANGUAGES CXX)
 
 include(CMakeToolsHelpers OPTIONAL)
+include(cmake/prepend_path.cmake)
 
 file(GLOB SRCS "src/*.cpp")
 file(GLOB TEST_SRCS "tests/*.cpp")
@@ -32,7 +33,7 @@ endif()
 add_library(cuttle_translator SHARED ${SRCS} ${HEADERS})
 add_executable(tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
 
-target_include_directories(cuttle_translator PRIVATE "src/")
-target_include_directories(tests PRIVATE "src/" "tests/")
+target_include_directories(cuttle_translator PRIVATE "src/" "deps/cuttle-parser/src/")
+target_include_directories(tests PRIVATE "src/" "tests/" "deps/cuttle-parser/src/")
 
 target_link_libraries(tests cuttle_translator)

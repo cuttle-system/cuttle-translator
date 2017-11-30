@@ -1,5 +1,6 @@
-#include "translator.hpp"
+#include "translator_methods.hpp"
 #include "translate_state.hpp"
+#include "dictionary_funcs.hpp"
 
 void cuttle::translate(
 	const cuttle::translator_t & translator, const cuttle::tokens_t & tokens, const cuttle::call_tree_t & tree, cuttle::values_t & values, cuttle::call_tree_t & new_tree
@@ -15,7 +16,7 @@ void cuttle::translate(
 
 	for (state.index = 0; state.index < tree.src.size(); ++state.index) {
 		token_t token = tokens[state.index];
-		if (token.type == ATOM_TOKEN) {
+		if (token.type == token_type::atom) {
 			if (dictionary.find(token.value) != dictionary.end()) {
 				dictionary[token.value][tree.src[state.index].size()](state);
 			} else {

@@ -1,0 +1,3 @@
+[submodule "deps/cuttle-parser"]
+	path = deps/cuttle-parser
+	url = git@github.com:cuttle-system/cuttle-parser.git
