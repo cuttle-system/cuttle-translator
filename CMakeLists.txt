@@ -31,9 +31,9 @@ elseif(WIN32)
 endif()
 
 add_library(cuttle_translator SHARED ${SRCS} ${HEADERS})
-add_executable(tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
+add_executable(cuttle_translator_tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
 
 target_include_directories(cuttle_translator PRIVATE "src/" "deps/cuttle-parser/src/")
-target_include_directories(tests PRIVATE "src/" "tests/" "deps/cuttle-parser/src/")
+target_include_directories(cuttle_translator_tests PRIVATE "src/" "tests/" "deps/cuttle-parser/src/")
 
-target_link_libraries(tests cuttle_translator)
+target_link_libraries(cuttle_translator_tests cuttle_translator)
