@@ -1,5 +1,4 @@
 #include "translator_methods.hpp"
-#include "translate_state.hpp"
 #include "dictionary_funcs.hpp"
 
 void cuttle::translate(
@@ -8,7 +7,7 @@ void cuttle::translate(
 	using namespace cuttle;
 
 	dictionary_t dictionary = translator.dictionary;
-	int new_index = 0;
+	unsigned int new_index = 0;
 	index_reference_t index_reference;
 	translate_state_t state = {
 		tokens, tree, 0, values, new_tree, new_index, index_reference

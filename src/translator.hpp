@@ -8,12 +8,12 @@
 
 namespace cuttle {
 	using translator_version_t = int;
-	using language_t = struct {
+	struct language_t {
 		std::string name;
 		translator_version_t version;
 	};
 
-	using translator_t = struct {
+	struct translator_t {
 		language_t from;
 		language_t to;
 		dictionary_t dictionary;

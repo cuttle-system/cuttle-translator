@@ -1,9 +1,10 @@
+#include "value.hpp"
 #include "value_methods.hpp"
 
-cuttle::value_type cuttle::value_from_token_type(cuttle::token_type token_type)
+cuttle::value_type cuttle::value_from_token_type(cuttle::token_type type)
 {
 	using namespace cuttle;
-	switch (token_type) {
+	switch (type) {
 	case token_type::atom:
 		return value_type::func_name;
 	case token_type::number:

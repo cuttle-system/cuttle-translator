@@ -13,7 +13,7 @@ namespace cuttle {
 		unknown
 	};
 
-	using value_t = struct {
+	struct value_t {
 		std::string value;
 		value_type type;
 	};

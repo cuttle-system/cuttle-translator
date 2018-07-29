@@ -7,13 +7,13 @@
 
 namespace cuttle {
 	using index_reference_t = std::map<int, int>;
-	using translate_state_t = struct {
+	struct translate_state_t {
 		const tokens_t& tokens;
 		const call_tree_t& tree;
-		int index;
+		unsigned int index;
 		values_t& values;
 		call_tree_t& new_tree;
-		int& new_index;
+		unsigned int& new_index;
 		index_reference_t& index_reference;
 	};
 }

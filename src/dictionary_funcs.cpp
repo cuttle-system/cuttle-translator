@@ -1,7 +1,7 @@
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
 
-int cuttle::dictionary_funcs::value(translate_state_t& state, std::string value, enum cuttle::value_type type) {
+int cuttle::dictionary_funcs::value(translate_state_t& state, const std::string& value, enum cuttle::value_type type) {
 	using namespace cuttle;
 
 	state.new_tree.src.push_back({});
@@ -9,15 +9,15 @@ int cuttle::dictionary_funcs::value(translate_state_t& state, std::string value,
 	return state.new_index++;
 }
 
-int cuttle::dictionary_funcs::function_name(translate_state_t& state, std::string value) {
+int cuttle::dictionary_funcs::function_name(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::func_name);
 }
 
-int cuttle::dictionary_funcs::string(translate_state_t& state, std::string value) {
+int cuttle::dictionary_funcs::string(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::string);
 }
 
-int cuttle::dictionary_funcs::number(translate_state_t& state, std::string value) {
+int cuttle::dictionary_funcs::number(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::number);
 }
 
@@ -44,7 +44,7 @@ int cuttle::dictionary_funcs::copy(translate_state_t& state) {
 
 	state.new_tree.src[function_index].resize(state.tree.src[state.index].size());
 
-	for (int i = 0; i < state.tree.src[state.index].size(); ++i) {
+	for (unsigned int i = 0; i < state.tree.src[state.index].size(); ++i) {
 		auto arg_index = state.tree.src[state.index][i];
 		if (state.index_reference.find(arg_index) == state.index_reference.end()) {
 			token_t token = state.tokens[arg_index];

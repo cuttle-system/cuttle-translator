@@ -18,7 +18,7 @@ inline void test_copy_basic_function() {
 			} };
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			tokens, tree, 1, values, new_tree, new_index, index_reference
@@ -50,7 +50,7 @@ inline void test_copy_basic_function() {
 			} };
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			tokens, tree, 0, values, new_tree, new_index, index_reference
@@ -81,7 +81,7 @@ inline void test_copy_basic_function() {
 			} };
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			tokens, tree, 1, values, new_tree, new_index, index_reference
@@ -111,7 +111,7 @@ inline void test_copy_basic_function() {
 			} };
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			tokens, tree, 0, values, new_tree, new_index, index_reference
@@ -149,7 +149,7 @@ inline void test_copy_nested_functions() {
 			} };
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			tokens, tree, 3, values, new_tree, new_index, index_reference
@@ -200,7 +200,7 @@ inline void test_value_functions() {
 	{
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -219,7 +219,7 @@ inline void test_value_functions() {
 	{
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -248,7 +248,7 @@ inline void test_value_functions() {
 	{
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -290,7 +290,7 @@ inline void test_add_function_function() {
 	{
 		values_t values = { {"foo", value_type::func_name},{ "1", value_type::number },{"2", value_type::number} };
 		call_tree_t new_tree = { { {}, {}, {} } };
-		int new_index = 3;
+		unsigned int new_index = 3;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -309,7 +309,7 @@ inline void test_add_function_function() {
 	{
 		values_t values = { {"foo", value_type::func_name}, { "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number } };
 		call_tree_t new_tree = { { {},{},{},{} } };
-		int new_index = 4;
+		unsigned int new_index = 4;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -341,7 +341,7 @@ inline void test_basic_interface() {
 	{
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
@@ -365,7 +365,7 @@ inline void test_basic_interface() {
 	{
 		values_t values;
 		call_tree_t new_tree;
-		int new_index = 0;
+		unsigned int new_index = 0;
 		index_reference_t index_reference;
 		translate_state_t state = {
 			{},{}, 0, values, new_tree, new_index, index_reference
