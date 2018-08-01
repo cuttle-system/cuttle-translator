@@ -6,7 +6,7 @@
 #include "call_tree.hpp"
 
 namespace cuttle {
-	using index_reference_t = std::map<int, int>;
+	using index_reference_t = std::map<unsigned int, unsigned int>;
 	struct translate_state_t {
 		const tokens_t& tokens;
 		const call_tree_t& tree;

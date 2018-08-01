@@ -1,7 +1,7 @@
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
 
-int cuttle::dictionary_funcs::value(translate_state_t& state, const std::string& value, enum cuttle::value_type type) {
+unsigned int cuttle::dictionary_funcs::value(translate_state_t& state, const std::string& value, enum cuttle::value_type type) {
 	using namespace cuttle;
 
 	state.new_tree.src.push_back({});
@@ -9,27 +9,27 @@ int cuttle::dictionary_funcs::value(translate_state_t& state, const std::string&
 	return state.new_index++;
 }
 
-int cuttle::dictionary_funcs::function_name(translate_state_t& state, const std::string& value) {
+unsigned int cuttle::dictionary_funcs::function_name(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::func_name);
 }
 
-int cuttle::dictionary_funcs::string(translate_state_t& state, const std::string& value) {
+unsigned int cuttle::dictionary_funcs::string(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::string);
 }
 
-int cuttle::dictionary_funcs::number(translate_state_t& state, const std::string& value) {
+unsigned int cuttle::dictionary_funcs::number(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::number);
 }
 
-int cuttle::dictionary_funcs::function(translate_state_t& state, int function_name_index, std::initializer_list<int> args_indexes) {
+unsigned int cuttle::dictionary_funcs::function(translate_state_t& state, unsigned int function_name_index, std::initializer_list<unsigned int> args_indexes) {
 	state.new_tree.src[function_name_index] = args_indexes;
 	return function_name_index;
 }
 
-int cuttle::dictionary_funcs::copy(translate_state_t& state) {
+unsigned int cuttle::dictionary_funcs::copy(translate_state_t& state) {
 	using namespace cuttle;
 
-	int function_index;
+	unsigned int function_index;
 
 	if (state.index_reference.find(state.index) == state.index_reference.end()) {
 		function_index = state.new_index;

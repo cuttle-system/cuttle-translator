@@ -1,13 +1,12 @@
 #include <iostream>
 #include "test.hpp"
 #include "dictionary_methods.hpp"
-#include "translate_state.hpp"
 
 using namespace cuttle;
 
 inline void test_adds_entries_with_one_argument() {
 	{
-		translate_function_t *func = [](translate_state_t& state) { return 0; };
+		translate_function_t *func = [](translate_state_t& state) { return 0u; };
 		dictionary_t dictionary;
 		add(dictionary, "foo", 1, func);
 		AssertEqual(dictionary.size(), 1, "Dictionary size");
@@ -17,7 +16,7 @@ inline void test_adds_entries_with_one_argument() {
 		AssertEqual(dictionary["foo"][1], func, "Dictionary entry function matches");
 	}
 	{
-		translate_function_t *func = [](translate_state_t& state) { return 0; };
+		translate_function_t *func = [](translate_state_t& state) { return 0u; };
 		dictionary_t dictionary;
 		add(dictionary, "foo", 2, func);
 		AssertEqual(dictionary.size(), 1, "Dictionary size");
@@ -27,7 +26,7 @@ inline void test_adds_entries_with_one_argument() {
 		AssertEqual(dictionary["foo"][2], func, "Dictionary entry function matches");
 	}
 	{
-		translate_function_t *func = [](translate_state_t& state) { return 0; };
+		translate_function_t *func = [](translate_state_t& state) { return 0u; };
 		dictionary_t dictionary;
 		add(dictionary, "foo", 150, func);
 		AssertEqual(dictionary.size(), 1, "Dictionary size");
@@ -37,8 +36,8 @@ inline void test_adds_entries_with_one_argument() {
 		AssertEqual(dictionary["foo"][150], func, "Dictionary entry function matches");
 	}
 	{
-		translate_function_t *func1 = [](translate_state_t& state) { return 0; };
-		translate_function_t *func2 = [](translate_state_t& state) { return 0; };
+		translate_function_t *func1 = [](translate_state_t& state) { return 0u; };
+		translate_function_t *func2 = [](translate_state_t& state) { return 0u; };
 		dictionary_t dictionary;
 		add(dictionary, "foo", 150, func1);
 		add(dictionary, "bar", 130, func2);
@@ -56,9 +55,9 @@ inline void test_adds_entries_with_one_argument() {
 
 inline void test_adds_entries_with_multiple_arguments() {
 	{
-		translate_function_t *func1 = [](translate_state_t& state) { return 0; };
-		translate_function_t *func2 = [](translate_state_t& state) { return 0; };
-		translate_function_t *func3 = [](translate_state_t& state) { return 0; };
+		translate_function_t *func1 = [](translate_state_t& state) { return 0u; };
+		translate_function_t *func2 = [](translate_state_t& state) { return 0u; };
+		translate_function_t *func3 = [](translate_state_t& state) { return 0u; };
 		dictionary_t dictionary;
 		add(dictionary, "foo", 1, func1);
 		add(dictionary, "foo", 2, func2);
