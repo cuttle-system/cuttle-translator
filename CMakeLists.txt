@@ -1,15 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
+project(CuttleTranslator VERSION 0.2 LANGUAGES CXX)
 
-project(CuttleTranslator VERSION 0.1 LANGUAGES CXX)
-
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CMakeToolsHelpers OPTIONAL)
-include(cmake/prepend_path.cmake)
-
-file(GLOB SRCS "src/*.cpp")
-file(GLOB_RECURSE TEST_SRCS "tests/*.cpp")
-
-file(GLOB HEADERS "src/*.hpp")
-file(GLOB_RECURSE TEST_HEADERS "tests/*.hpp")
+include(add_dependency)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -19,21 +13,35 @@ set(CMAKE_CXX_FLAGS_RELEASE
   "${CMAKE_CXX_FLAGS_RELEASE} -std=c++14")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS_DEBUG
-            "${CMAKE_CXX_FLAGS_DEBUG} -Wextra")
-    set(CMAKE_CXX_FLAGS_RELEASE
-            "${CMAKE_CXX_FLAGS_RELEASE} -Wextra")
+  set(CMAKE_CXX_FLAGS_DEBUG
+    "${CMAKE_CXX_FLAGS_DEBUG} -Wextra")
+  set(CMAKE_CXX_FLAGS_RELEASE
+    "${CMAKE_CXX_FLAGS_RELEASE} -Wextra -O3")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-    #set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
-    #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox")
-    #set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
 endif()
 
-add_library(cuttle_translator SHARED ${SRCS} ${HEADERS})
-add_executable(cuttle_translator_tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
+set(SRC_INCLUDE_DIRECTORIES
+    "src/"
+    "../cuttle-parser/src")
 
-target_include_directories(cuttle_translator PRIVATE "src/" "deps/cuttle-parser/src/")
-target_include_directories(cuttle_translator_tests PRIVATE "src/" "tests/" "deps/cuttle-parser/src/" "tests/cuttle-test/src/")
+file(GLOB SRCS "src/*.cpp")
+file(GLOB_RECURSE TEST_SRCS "tests/*.cpp")
+file(GLOB CUTTLE_TEST_SRCS "../cuttle-test/src/*.cpp")
 
-target_link_libraries(cuttle_translator_tests cuttle_translator)
+file(GLOB HEADERS "src/*.hpp")
+file(GLOB_RECURSE TEST_HEADERS "tests/*.hpp")
+
+add_dependency(cuttle-parser)
+
+add_library(cuttle-translator SHARED ${SRCS} ${HEADERS})
+add_executable(cuttle-translator-tests ${CUTTLE_TEST_SRCS} ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
+
+target_include_directories(cuttle-translator PRIVATE ${SRC_INCLUDE_DIRECTORIES})
+target_include_directories(cuttle-translator-tests
+    PRIVATE
+    "tests/"
+    "../cuttle-test/src/"
+    ${SRC_INCLUDE_DIRECTORIES})
+
+target_link_libraries(cuttle-translator-tests cuttle-translator cuttle-parser)
