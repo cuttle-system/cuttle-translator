@@ -12,6 +12,7 @@ namespace cuttle {
 		unsigned int string(translate_state_t& state, const std::string& value);
 		unsigned int number(translate_state_t& state, const std::string& value);
 
-		unsigned int function(translate_state_t& state, unsigned int function_name_index, std::initializer_list<unsigned int> args_indexes);
+		unsigned int function(translate_state_t &state, unsigned int function_name_index,
+                              std::vector<unsigned int> args_indexes);
 	}
 }

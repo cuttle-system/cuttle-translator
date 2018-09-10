@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
 
@@ -21,8 +23,9 @@ unsigned int cuttle::dictionary_funcs::number(translate_state_t& state, const st
 	return cuttle::dictionary_funcs::value(state, value, value_type::number);
 }
 
-unsigned int cuttle::dictionary_funcs::function(translate_state_t& state, unsigned int function_name_index, std::initializer_list<unsigned int> args_indexes) {
-	state.new_tree.src[function_name_index] = args_indexes;
+unsigned int cuttle::dictionary_funcs::function(translate_state_t &state, unsigned int function_name_index,
+												std::vector<unsigned int> args_indexes) {
+	state.new_tree.src[function_name_index] = std::move(args_indexes);
 	return function_name_index;
 }
 

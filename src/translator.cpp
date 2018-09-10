@@ -17,7 +17,14 @@ void cuttle::translate(
 		token_t token = tokens[state.index];
 		if (token.type == token_type::atom) {
 			if (dictionary.find(token.value) != dictionary.end()) {
-				dictionary[token.value][tree.src[state.index].size()](state);
+                dictionary[token.value][tree.src[state.index].size()](state);
+            } else if (dictionary.find(TRANSLATOR_ANY_NAME) != dictionary.end()) {
+                auto translate_functions = dictionary[TRANSLATOR_ANY_NAME];
+			    if (translate_functions.find(DICTIONARY_ANY_ARG_NUMBER) != translate_functions.end()) {
+                    translate_functions[DICTIONARY_ANY_ARG_NUMBER](state);
+                } else {
+                    dictionary_funcs::copy(state);
+			    }
 			} else {
 				dictionary_funcs::copy(state);
 			}
