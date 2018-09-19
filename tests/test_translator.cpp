@@ -39,11 +39,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_basic_function_call_suite, translates_basic_
 			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{}, {0, 2}, {}
+			{}, {0, 2}, {}, {1}
 		} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{1, 2}, {}, {}
+			{1, 2}, {}, {}, {0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{"+", value_type::func_name}, {"1", value_type::number}, {"2", value_type::number}
@@ -57,11 +57,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_basic_function_call_suite, translates_basic_
 			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{ 1, 2 }, {},{}
+			{ 1, 2 }, {},{}, {0}
 		} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{ "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
@@ -75,11 +75,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_basic_function_call_suite, translates_basic_
 			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{},{ 0, 2 },{}
+			{},{ 0, 2 },{}, {1}
 		} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{ "minus", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
@@ -93,11 +93,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_basic_function_call_suite, translates_basic_
 			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 		} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{ "minus", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
@@ -111,11 +111,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_basic_function_call_suite, translates_basic_
 			{ token_type::number, "2", 0, 0 }
 		};
 		call_tree_t tree = { {
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 			} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{}
+			{ 1, 2 },{},{}, {0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{ "foo", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number }
@@ -158,12 +158,12 @@ BOOST_FIXTURE_TEST_SUITE(translates_nested_function_call_suite, translates_neste
 		};
 		call_tree_t tree = { {
 			{},{ 0, 2 },{},
-			{1, 4},{}
+			{1, 4},{}, {3}
 			} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
 			{ 1, 2 },{},{},
-			{0, 4},{}
+			{0, 4},{}, {3}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{ "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number },
@@ -182,12 +182,12 @@ BOOST_FIXTURE_TEST_SUITE(translates_nested_function_call_suite, translates_neste
 		};
 		call_tree_t tree = { {
 			{4}, {}, { 1, 3 },{},
-			{ 2, 5 },{}
+			{ 2, 5 },{}, {0}
 			} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
 			{1}, { 2, 5 }, {3, 4}, {},
-			{},{}
+			{},{},{0}
 		}));
 		BOOST_CHECK(values == (values_t{
 			{"foo", value_type::func_name },
@@ -246,11 +246,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
         };
         call_tree_t tree = { {
                                      {},{ 0, 3 },{},
-                                     {2, 4}, {}
+                                     {2, 4}, {}, {1}
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
-                {}, {}
+                {}, {}, {0}
         }));
         BOOST_CHECK(values == (values_t{
                 { "any_function_here", value_type::func_name },
@@ -268,12 +268,12 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
         };
         call_tree_t tree = { {
                                      {},{ 0, 3 },{},
-                                     {2, 4}, {}
+                                     {2, 4}, {}, {1}
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
                 { 1, 2 }, {},
-                { 3, 4 }, {}, {}
+                { 3, 4 }, {}, {}, {0}
         }));
         BOOST_CHECK(values == (values_t{
                 { "minus", value_type::func_name },{ "2", value_type::number },
@@ -291,11 +291,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
         };
         call_tree_t tree = { {
                                      {},{ 0, 3 },{},
-                                     {2, 4}, {}
+                                     {2, 4}, {}, {1}
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
-                { 1, 2 }, {}, {}
+                { 1, 2 }, {}, {}, {0}
         }));
         BOOST_CHECK(values == (values_t{
                 { "minus", value_type::func_name },{ "2", value_type::number },
@@ -313,11 +313,11 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
         };
         call_tree_t tree = { {
                                      {},{ 0, 3 },{},
-                                     {2, 4}, {}
+                                     {2, 4}, {}, {3}
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
-                {}, {2, 3}, {}, {}
+                {}, {2, 3}, {}, {}, {1}
         }));
         BOOST_CHECK(values == (values_t{
                 { "any_function_here", value_type::func_name },

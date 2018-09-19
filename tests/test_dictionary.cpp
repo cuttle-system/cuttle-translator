@@ -80,4 +80,5 @@ BOOST_FIXTURE_TEST_SUITE(adds_entries_with_multiple_arguments_suite, dictionary_
 		BOOST_CHECK(dictionary["foo"].find(3) != dictionary["foo"].end());
 		BOOST_CHECK_EQUAL(dictionary["foo"][3], func3);
 	}
-}
+
+BOOST_AUTO_TEST_SUITE_END()
