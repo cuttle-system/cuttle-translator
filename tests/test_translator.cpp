@@ -162,12 +162,15 @@ BOOST_FIXTURE_TEST_SUITE(translates_nested_function_call_suite, translates_neste
 			} };
 		translate(translator, tokens, tree, values, new_tree);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{},
-			{0, 4},{}, {3}
+			{ 1, 4 },
+			{2, 3},{},{},
+			{},
+			{0}
 		}));
 		BOOST_CHECK(values == (values_t{
-			{ "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number },
-			{ "minus", value_type::func_name }, { "3", value_type::number }
+		    { "minus", value_type::func_name },
+		    { "+", value_type::func_name },{ "1", value_type::number },{ "2", value_type::number },
+			{ "3", value_type::number }
 		}));
 	}
 
@@ -250,11 +253,10 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
-                {}, {}, {0}
+                {}, {0}
         }));
         BOOST_CHECK(values == (values_t{
                 { "any_function_here", value_type::func_name },
-                { "any_function_here", value_type::func_name }
         }));
     }
 
@@ -307,21 +309,20 @@ BOOST_FIXTURE_TEST_SUITE(translates_wildcard_function_call_suite, translates_wil
         tokens_t tokens = {
                 { token_type::number, "2", 0, 0 },
                 { token_type::atom, "/", 0, 0 },
-                { token_type::number, "3", 0, 0 },
+                { token_type::number, "1", 0, 0 },
                 { token_type::atom, "+", 0, 0 },
                 { token_type::number, "3", 0, 0 }
         };
         call_tree_t tree = { {
                                      {},{ 0, 3 },{},
-                                     {2, 4}, {}, {3}
+                                     {2, 4}, {}, {1}
                              } };
         translate(translator, tokens, tree, values, new_tree);
         BOOST_CHECK(new_tree.src == (tree_src_t{
-                {}, {2, 3}, {}, {}, {1}
+            {}, {0}
         }));
         BOOST_CHECK(values == (values_t{
-                { "any_function_here", value_type::func_name },
-                { "+", value_type::func_name },{ "3", value_type::number }, { "3", value_type::number }
+                { "any_function_here", value_type::func_name }
         }));
     }
 

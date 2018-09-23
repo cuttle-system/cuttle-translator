@@ -12,6 +12,7 @@ struct copy_return_values_fixture {
     values_t values;
     call_tree_t new_tree;
     index_reference_t index_reference;
+    dictionary_t dictionary;
 };
 
 BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
@@ -27,7 +28,7 @@ BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
 			} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			tokens, tree, 1, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 1, values, new_tree, new_index, index_reference
 		};
 		auto ret = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret, 0u);
@@ -58,7 +59,7 @@ BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
 			} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			tokens, tree, 0, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference
 		};
 		auto ret = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret, 0u);
@@ -87,7 +88,7 @@ BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
 			} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			tokens, tree, 1, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 1, values, new_tree, new_index, index_reference
 		};
 		auto ret = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret, 0u);
@@ -115,7 +116,7 @@ BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
 			} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			tokens, tree, 0, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference
 		};
 		auto ret = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret, 0u);
@@ -149,61 +150,46 @@ BOOST_FIXTURE_TEST_SUITE(copy_nested_functions_suite, copy_return_values_fixture
 		call_tree_t tree = { {
 			{},{ 0, 2 },{},
 			{ 1, 4 },{}
-			} };
+		} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			tokens, tree, 3, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 3, values, new_tree, new_index, index_reference
 		};
 
 		auto ret1 = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret1, 0u);
-		BOOST_CHECK_EQUAL(new_index, 3u);
-		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{},{}
-		}));
-		BOOST_CHECK(values == (values_t{
-			{ "-", value_type::func_name },{ "+", value_type::func_name },{ "3", value_type::number }
-		}));
-		BOOST_CHECK(index_reference.find(0) == index_reference.end());
-		BOOST_CHECK(index_reference.find(1) != index_reference.end());
-		BOOST_CHECK(index_reference.find(2) == index_reference.end());
-		BOOST_CHECK(index_reference.find(3) != index_reference.end());
-		BOOST_CHECK(index_reference.find(4) != index_reference.end());
-		BOOST_CHECK_EQUAL(index_reference[1], 1u);
-		BOOST_CHECK_EQUAL(index_reference[3], 0u);
-		BOOST_CHECK_EQUAL(index_reference[4], 2u);
-
-		state.index = 1;
-		auto ret2 = dictionary_funcs::copy(state);
-		BOOST_CHECK_EQUAL(ret2, 1u);
 		BOOST_CHECK_EQUAL(new_index, 5u);
 		BOOST_CHECK(new_tree.src == (tree_src_t{
-			{ 1, 2 },{ 3, 4 },{},{},{}
+			{ 1, 4 },{2, 3},{},{},{}
 		}));
 		BOOST_CHECK(values == (values_t{
-			{ "-", value_type::func_name }, { "+", value_type::func_name },{ "3", value_type::number },{ "1", value_type::number },{ "2", value_type::number }
+			{ "-", value_type::func_name },
+			{ "+", value_type::func_name },
+            { "1", value_type::number },
+            { "2", value_type::number },
+            { "3", value_type::number }
 		}));
 		BOOST_CHECK(index_reference.find(0) != index_reference.end());
 		BOOST_CHECK(index_reference.find(1) != index_reference.end());
 		BOOST_CHECK(index_reference.find(2) != index_reference.end());
 		BOOST_CHECK(index_reference.find(3) != index_reference.end());
-		BOOST_CHECK(index_reference.find(4) != index_reference.end());
-		BOOST_CHECK_EQUAL(index_reference[0], 3u);
-		BOOST_CHECK_EQUAL(index_reference[1], 1u);
-		BOOST_CHECK_EQUAL(index_reference[2], 4u);
-		BOOST_CHECK_EQUAL(index_reference[3], 0u);
-		BOOST_CHECK_EQUAL(index_reference[4], 2u);
+        BOOST_CHECK(index_reference.find(4) != index_reference.end());
+        BOOST_CHECK(index_reference.find(5) == index_reference.end());
+        BOOST_CHECK_EQUAL(index_reference[0], 2u);
+        BOOST_CHECK_EQUAL(index_reference[1], 1u);
+        BOOST_CHECK_EQUAL(index_reference[2], 3u);
+        BOOST_CHECK_EQUAL(index_reference[3], 0u);
+		BOOST_CHECK_EQUAL(index_reference[4], 4u);
 	}
 
 BOOST_AUTO_TEST_SUITE_END()
-
 
 BOOST_FIXTURE_TEST_SUITE(value_functions_suite, copy_return_values_fixture)
 
     BOOST_AUTO_TEST_CASE(case1) {
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		auto ret = dictionary_funcs::value(state, "1", value_type::number);
@@ -220,7 +206,7 @@ BOOST_FIXTURE_TEST_SUITE(value_functions_suite, copy_return_values_fixture)
     BOOST_AUTO_TEST_CASE(case2) {
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		auto ret1 = dictionary_funcs::value(state, "1", value_type::number);
@@ -247,7 +233,7 @@ BOOST_FIXTURE_TEST_SUITE(value_functions_suite, copy_return_values_fixture)
     BOOST_AUTO_TEST_CASE(case3) {
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		auto ret1 = dictionary_funcs::number(state, "1");
@@ -285,6 +271,7 @@ BOOST_AUTO_TEST_SUITE_END()
 
 struct index_reference_fixture {
     index_reference_t index_reference;
+    dictionary_t dictionary;
 };
 
 BOOST_FIXTURE_TEST_SUITE(add_function_suite, index_reference_fixture)
@@ -294,7 +281,7 @@ BOOST_FIXTURE_TEST_SUITE(add_function_suite, index_reference_fixture)
 		call_tree_t new_tree = { { {}, {}, {} } };
 		unsigned int new_index = 3;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		auto ret = dictionary_funcs::function(state, 0, { 1, 2 });
@@ -313,7 +300,7 @@ BOOST_FIXTURE_TEST_SUITE(add_function_suite, index_reference_fixture)
 		call_tree_t new_tree = { { {},{},{},{} } };
 		unsigned int new_index = 4;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		auto ret1 = dictionary_funcs::function(state, 1, {2, 3});
@@ -344,7 +331,7 @@ BOOST_FIXTURE_TEST_SUITE(basic_interface_suite, copy_return_values_fixture)
     BOOST_AUTO_TEST_CASE(case1) {
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
         namespace df = dictionary_funcs;
@@ -366,7 +353,7 @@ BOOST_FIXTURE_TEST_SUITE(basic_interface_suite, copy_return_values_fixture)
     BOOST_AUTO_TEST_CASE(case2) {
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			{},{}, 0, values, new_tree, new_index, index_reference
+			dictionary, {},{}, 0, values, new_tree, new_index, index_reference
 		};
 
 		namespace df = dictionary_funcs;
