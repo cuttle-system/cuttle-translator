@@ -1,20 +1,25 @@
 #include "translator_methods.hpp"
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
+#include "dictionary_methods.hpp"
 
 using namespace cuttle;
 
 unsigned int cuttle::translate_function_call(translate_state_t &state) {
     token_t token = state.tokens[state.index];
-    if (state.dictionary.find(token.value) != state.dictionary.end()) {
-        return state.dictionary[token.value][state.tree.src[state.index].size()](state);
-    } else if (state.dictionary.find(TRANSLATOR_ANY_NAME) != state.dictionary.end()) {
-        auto translate_functions = state.dictionary[TRANSLATOR_ANY_NAME];
-        if (translate_functions.find(DICTIONARY_ANY_ARG_NUMBER) != translate_functions.end()) {
-            return translate_functions[DICTIONARY_ANY_ARG_NUMBER](state);
-        } else {
-            return dictionary_funcs::copy(state);
-        }
+//    if (state.dictionary.find(token.value) != state.dictionary.end()) {
+//        return state.dictionary[token.value][state.tree.src[state.index].size()](state);
+//    } else if (state.dictionary.find(TRANSLATOR_ANY_NAME) != state.dictionary.end()) {
+//        auto translate_functions = state.dictionary[TRANSLATOR_ANY_NAME];
+//        if (translate_functions.find(DICTIONARY_ANY_ARG_NUMBER) != translate_functions.end()) {
+//            return translate_functions[DICTIONARY_ANY_ARG_NUMBER](state);
+//        } else {
+//            return dictionary_funcs::copy(state);
+//        }
+//    }
+    dictionary_element_t function_index;
+    if (lookup(state.dictionary, state.tree, state.tokens, state.index, function_index)) {
+        return state.dictionary.translate_functions[function_index](state);
     }
     return dictionary_funcs::copy(state);
 }
@@ -25,8 +30,8 @@ void cuttle::translate(
 ) {
     tree_src_elements_t root_args;
     dictionary_t dictionary = translator.dictionary;
-    unsigned int new_index = 0;
-    unsigned int root_arg_index;
+    tree_src_element_t new_index = 0;
+    tree_src_element_t root_arg_index;
     index_reference_t index_reference;
 	translate_state_t state = {
 		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference

@@ -32,7 +32,7 @@ tree_src_element_t cuttle::dictionary_funcs::function(translate_state_t &state,
 	return function_name_index;
 }
 
-unsigned int cuttle::dictionary_funcs::copy(translate_state_t& state) {
+tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t& state) {
     tree_src_element_t new_arg_index;
 
 	token_t function_name_token = state.tokens[state.index];
