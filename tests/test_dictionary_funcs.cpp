@@ -13,6 +13,10 @@ struct copy_return_values_fixture {
     call_tree_t new_tree;
     index_reference_t index_reference;
     dictionary_t dictionary;
+
+    void setup() {
+        initialize(dictionary);
+    }
 };
 
 BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
@@ -28,7 +32,7 @@ BOOST_FIXTURE_TEST_SUITE(copy_basic_function_suite, copy_return_values_fixture)
 			} };
 		unsigned int new_index = 0;
 		translate_state_t state = {
-			dictionary, tokens, tree, 1, values, new_tree, new_index, index_reference
+			dictionary, tokens, tree, 1, values, new_tree, new_index, index_reference, 0, {}
 		};
 		auto ret = dictionary_funcs::copy(state);
 		BOOST_CHECK_EQUAL(ret, 0u);

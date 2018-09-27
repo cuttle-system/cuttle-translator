@@ -9,6 +9,7 @@ namespace cuttle {
 
 		tree_src_element_t value(translate_state_t& state, const std::string& value, enum value_type type);
 		tree_src_element_t function_name(translate_state_t& state, const std::string& value);
+		tree_src_element_t parameter(translate_state_t& state, const std::string& name);
 		tree_src_element_t string(translate_state_t& state, const std::string& value);
 		tree_src_element_t number(translate_state_t& state, const std::string& value);
 

@@ -16,6 +16,14 @@ tree_src_element_t cuttle::dictionary_funcs::function_name(translate_state_t& st
 	return cuttle::dictionary_funcs::value(state, value, value_type::func_name);
 }
 
+tree_src_element_t cuttle::dictionary_funcs::parameter(translate_state_t& state, const std::string& name) {
+    dictionary_element_t dictionary_index = state.dictionary.parameter_indexes[state.translate_function_index][name];
+	auto child_state = state;
+	child_state.index = state.dictionary_index_to_index[dictionary_index];
+    auto subtree_i = cuttle::translate_function_call(child_state);
+	return subtree_i;
+}
+
 tree_src_element_t cuttle::dictionary_funcs::string(translate_state_t& state, const std::string& value) {
 	return cuttle::dictionary_funcs::value(state, value, value_type::string);
 }
@@ -33,13 +41,16 @@ tree_src_element_t cuttle::dictionary_funcs::function(translate_state_t &state,
 }
 
 tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t& state) {
+    token_t root_token = state.tokens[state.index];
+    tree_src_element_t index;
+    if (root_token.type == token_type::atom) {
+        index = dictionary_funcs::function(
+                state, dictionary_funcs::function_name(state, root_token.value), {});
+    } else {
+        index = dictionary_funcs::value(state, root_token.value, value_from_token_type(root_token.type));
+    }
     tree_src_element_t new_arg_index;
-
-	token_t function_name_token = state.tokens[state.index];
-	tree_src_element_t function_index = dictionary_funcs::function(
-			state, dictionary_funcs::function_name(state, function_name_token.value), {});
-
-    state.index_reference[state.index] = function_index;
+    state.index_reference[state.index] = index;
 
     for (auto arg_index : state.tree.src[state.index]) {
 	    token_t token = state.tokens[arg_index];
@@ -51,9 +62,9 @@ tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t& state) {
 	        new_arg_index = dictionary_funcs::value(state,
 	                token.value, value_from_token_type(token.type));
         }
-        state.new_tree.src[function_index].push_back(new_arg_index);
+        state.new_tree.src[index].push_back(new_arg_index);
         state.index_reference[arg_index] = new_arg_index;
 	}
 
-	return function_index;
+	return index;
 }

@@ -17,9 +17,9 @@ unsigned int cuttle::translate_function_call(translate_state_t &state) {
 //            return dictionary_funcs::copy(state);
 //        }
 //    }
-    dictionary_element_t function_index;
-    if (lookup(state.dictionary, state.tree, state.tokens, state.index, function_index)) {
-        return state.dictionary.translate_functions[function_index](state);
+    state.dictionary_index_to_index.clear();
+    if (lookup(state.dictionary, state.tree, state.tokens, state.index, state.translate_function_index, state.dictionary_index_to_index)) {
+        return state.dictionary.translate_functions[state.translate_function_index](state);
     }
     return dictionary_funcs::copy(state);
 }
@@ -34,7 +34,7 @@ void cuttle::translate(
     tree_src_element_t root_arg_index;
     index_reference_t index_reference;
 	translate_state_t state = {
-		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference
+		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference, 0, {}
 	};
 
 	for (auto index : tree.src.back()) {

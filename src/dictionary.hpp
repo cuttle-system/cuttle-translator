@@ -23,11 +23,14 @@ namespace cuttle {
 //	using dictionary_t = std::map<std::string, std::map<arg_number_t, translate_function_t *> >;
 
     using dictionary_element_t = unsigned int;
-    using dictionary_elements_t = std::map<std::pair<std::string, token_type>, dictionary_element_t>;
+    using dictionary_elements_t = std::map<token_type, std::map<std::string, dictionary_element_t> >;
 
     struct dictionary_t {
         std::vector<std::vector<dictionary_elements_t> > src;
 		std::vector<std::set<dictionary_element_t> > functions_ended_on_index;
+        std::vector<std::vector<std::set<dictionary_element_t> > > parameter_sets;
+        std::vector<std::map<dictionary_element_t, std::vector<dictionary_element_t> > > children;
+        std::map<dictionary_element_t, std::map<std::string, dictionary_element_t> > parameter_indexes;
         std::vector<translate_function_t *> translate_functions;
     };
 }

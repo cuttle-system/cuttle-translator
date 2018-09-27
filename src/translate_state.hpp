@@ -17,5 +17,7 @@ namespace cuttle {
 		call_tree_t &new_tree;
 		unsigned int &new_index;
 		index_reference_t &index_reference;
+		dictionary_element_t translate_function_index;
+		std::map<dictionary_element_t, tree_src_element_t> dictionary_index_to_index;
 	};
 }
