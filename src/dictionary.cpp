@@ -1,5 +1,6 @@
 #include <string>
 #include <algorithm>
+#include <iostream>
 #include "dictionary_methods.hpp"
 #include "dictionary_funcs.hpp"
 
@@ -139,7 +140,6 @@ bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const token
     return !function_indexes.empty();
 }
 
-
 void dfs(dictionary_t &dictionary, dictionary_element_t function_index, const call_tree_t &tree,
         tree_src_element_t index, dictionary_element_t new_index,
         std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
@@ -156,20 +156,22 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
     std::set<dictionary_element_t> function_indexes;
     if (index != TREE_SRC_ROOT_INDEX) {
         token_t token = tokens[index];
-        for (auto arg_sub_tree : dictionary.src[new_index]) {
+        for (auto &arg_sub_tree : dictionary.src[new_index]) {
             if (arg_sub_tree.find(token.type) != arg_sub_tree.end()
                 && arg_sub_tree[token.type].find(token.value) != arg_sub_tree[token.type].end()
             ) {
                 new_index = arg_sub_tree[token.type][token.value];
                 break;
-            } else if (arg_sub_tree.find(token_type::macro_p)
-                    != arg_sub_tree.end()
-                || (token.type == token_type::atom && arg_sub_tree.find(token_type::macro_pf)
-                    != arg_sub_tree.end())
-            ) {
-                new_index = arg_sub_tree[token.type].begin()->second;
-                function_index = *dictionary.functions_ended_on_index[new_index].begin();
-                new_index_to_index[new_index] = index;
+            } else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
+                auto element_index = arg_sub_tree[token_type::macro_p].begin()->second;
+                std::cout << element_index << " " << new_index << " " << dictionary.functions_ended_on_index.size();
+                function_index = *dictionary.functions_ended_on_index[element_index].begin();
+                new_index_to_index[element_index] = index;
+                return true;
+            } else if (token.type == token_type::atom && arg_sub_tree.find(token_type::macro_pf) != arg_sub_tree.end()) {
+                auto element_index = arg_sub_tree[token_type::macro_pf].begin()->second;
+                function_index = *dictionary.functions_ended_on_index[element_index].begin();
+                new_index_to_index[element_index] = index;
                 return true;
             }
         }

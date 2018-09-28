@@ -1,3 +1,4 @@
+#include <iostream>
 #include "translator_methods.hpp"
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
@@ -31,12 +32,13 @@ void cuttle::translate(
 		state.index = index;
         token_t token = state.tokens[state.index];
         if (token.type == token_type::atom) {
-            root_arg_index = translate_function_call(state);
+            auto child_state = state;
+            root_arg_index = translate_function_call(child_state);
         } else {
             root_arg_index = dictionary_funcs::value(state, token.value, value_from_token_type(token.type));
         }
         root_args.push_back(root_arg_index);
     }
 
-	new_tree.src.push_back(root_args);
+    new_tree.src.push_back(root_args);
 }
