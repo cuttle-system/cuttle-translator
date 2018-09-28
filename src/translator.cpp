@@ -1,4 +1,3 @@
-#include <iostream>
 #include "translator_methods.hpp"
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"

@@ -1,6 +1,5 @@
 #include <string>
 #include <algorithm>
-#include <iostream>
 #include "dictionary_methods.hpp"
 #include "dictionary_funcs.hpp"
 
@@ -164,7 +163,6 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
                 break;
             } else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
                 auto element_index = arg_sub_tree[token_type::macro_p].begin()->second;
-                std::cout << element_index << " " << new_index << " " << dictionary.functions_ended_on_index.size();
                 function_index = *dictionary.functions_ended_on_index[element_index].begin();
                 new_index_to_index[element_index] = index;
                 return true;
