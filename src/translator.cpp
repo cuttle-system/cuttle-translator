@@ -7,16 +7,6 @@ using namespace cuttle;
 
 unsigned int cuttle::translate_function_call(translate_state_t &state) {
     token_t token = state.tokens[state.index];
-//    if (state.dictionary.find(token.value) != state.dictionary.end()) {
-//        return state.dictionary[token.value][state.tree.src[state.index].size()](state);
-//    } else if (state.dictionary.find(TRANSLATOR_ANY_NAME) != state.dictionary.end()) {
-//        auto translate_functions = state.dictionary[TRANSLATOR_ANY_NAME];
-//        if (translate_functions.find(DICTIONARY_ANY_ARG_NUMBER) != translate_functions.end()) {
-//            return translate_functions[DICTIONARY_ANY_ARG_NUMBER](state);
-//        } else {
-//            return dictionary_funcs::copy(state);
-//        }
-//    }
     state.dictionary_index_to_index.clear();
     if (lookup(state.dictionary, state.tree, state.tokens, state.index, state.translate_function_index, state.dictionary_index_to_index)) {
         return state.dictionary.translate_functions[state.translate_function_index](state);
