@@ -1,3 +1,5 @@
+[//]: <> ({% raw %})
+
 # Cuttle Translator
 A call tree translator to be used in Cuttle System
 
@@ -5,7 +7,7 @@ A call tree translator to be used in Cuttle System
 
 Set `dictionary_t` rules as in the following code example.
 
-```c++
+```cpp
 translator_t translator = {{ "mylang1", 1 },{ "mylang2", 1 }, {}};
 initialize(translator.dictionary);
 
@@ -54,3 +56,5 @@ translate(translator, tokens, tree, values, new_tree);
     1. `cd build`
     2. `cmake ..`
     3. `make`
+
+[//]: <> ({% endraw %})
