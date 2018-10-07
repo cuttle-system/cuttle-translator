@@ -1,4 +1,4 @@
-[//]: <> ({% raw %})
+[//]: # ({% raw %})
 
 # Cuttle Translator
 A call tree translator to be used in Cuttle System
@@ -57,4 +57,4 @@ translate(translator, tokens, tree, values, new_tree);
     2. `cmake ..`
     3. `make`
 
-[//]: <> ({% endraw %})
+[//]: # ({% endraw %})
