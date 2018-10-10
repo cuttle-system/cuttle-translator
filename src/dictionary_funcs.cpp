@@ -1,4 +1,5 @@
 #include <utility>
+#include <vector>
 
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
@@ -68,3 +69,14 @@ tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t& state) {
 
 	return index;
 }
+
+std::vector<tree_src_element_t> cuttle::dictionary_funcs::copy(translate_state_t& state, const std::vector<tree_src_element_t> &elements) {
+    std::vector<tree_src_element_t> copied;
+    for (auto &elem : elements) {
+        auto child_state = state;
+        child_state.index = elem;
+        copied.push_back(copy(child_state));
+    }
+    return copied;
+}
+
