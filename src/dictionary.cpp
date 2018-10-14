@@ -54,8 +54,8 @@ void inner_add(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t
     }
 }
 
-void cuttle::add(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens,
-                 translate_function_t *function, tree_src_element_t index
+dictionary_element_t cuttle::add(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens,
+                                 translate_function_t *function, tree_src_element_t index
 ) {
     if (index == TREE_SRC_ROOT_INDEX) {
         index = (tree_src_element_t) tree.src.size() - 1;
@@ -66,6 +66,7 @@ void cuttle::add(dictionary_t &dictionary, const call_tree_t &tree, const tokens
     dictionary_element_t new_index = 0u;
 
     inner_add(dictionary, tree, tokens, function_index, index, new_index);
+    return function_index;
 }
 
 bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens, tree_src_element_t index,
