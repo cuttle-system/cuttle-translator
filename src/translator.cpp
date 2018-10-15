@@ -30,12 +30,14 @@ void cuttle::translate(
 	for (auto index : tree.src.back()) {
 		state.index = index;
         token_t token = state.tokens[state.index];
-        if (token.type == token_type::atom) {
-            auto child_state = state;
-            root_arg_index = translate_function_call(child_state);
-        } else {
-            root_arg_index = dictionary_funcs::value(state, token.value, value_from_token_type(token.type));
-        }
+        auto child_state = state;
+        root_arg_index = translate_function_call(child_state);
+//        if (token.type == token_type::atom) {
+//            auto child_state = state;
+//            root_arg_index = translate_function_call(child_state);
+//        } else {
+//            root_arg_index = dictionary_funcs::value(state, token.value, value_from_token_type(token.type));
+//        }
         root_args.push_back(root_arg_index);
     }
 

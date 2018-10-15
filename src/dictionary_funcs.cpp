@@ -56,14 +56,17 @@ tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t &state) {
 
     for (auto arg_index : state.tree.src[state.index]) {
         token_t token = state.tokens[arg_index];
-        if (token.type == token_type::atom) {
             translate_state_t child_state = state;
             child_state.index = arg_index;
             new_arg_index = translate_function_call(child_state);
-        } else {
-            new_arg_index = dictionary_funcs::value(state,
-                                                    token.value, value_from_token_type(token.type));
-        }
+//        if (token.type == token_type::atom) {
+//            translate_state_t child_state = state;
+//            child_state.index = arg_index;
+//            new_arg_index = translate_function_call(child_state);
+//        } else {
+//            new_arg_index = dictionary_funcs::value(state,
+//                                                    token.value, value_from_token_type(token.type));
+//        }
         state.new_tree.src[index].push_back(new_arg_index);
         state.index_reference[arg_index] = new_arg_index;
     }

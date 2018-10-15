@@ -162,13 +162,13 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
             ) {
                 new_index = arg_sub_tree[token.type][token.value];
                 break;
-            } else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
-                auto element_index = arg_sub_tree[token_type::macro_p].begin()->second;
+            } else if (token.type == token_type::atom && arg_sub_tree.find(token_type::macro_pf) != arg_sub_tree.end()) {
+                auto element_index = arg_sub_tree[token_type::macro_pf].begin()->second;
                 function_index = *dictionary.functions_ended_on_index[element_index].begin();
                 new_index_to_index[element_index] = index;
                 return true;
-            } else if (token.type == token_type::atom && arg_sub_tree.find(token_type::macro_pf) != arg_sub_tree.end()) {
-                auto element_index = arg_sub_tree[token_type::macro_pf].begin()->second;
+            }  else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
+                auto element_index = arg_sub_tree[token_type::macro_p].begin()->second;
                 function_index = *dictionary.functions_ended_on_index[element_index].begin();
                 new_index_to_index[element_index] = index;
                 return true;
