@@ -8,6 +8,8 @@
 #include "value.hpp"
 
 namespace cuttle {
+	const std::string CUTTLE_MERGE_WITH_PARENT_FUNC = "__cuttle_merge_with_parent_func";
+
 	struct translator_t {
 		language_t from;
 		language_t to;

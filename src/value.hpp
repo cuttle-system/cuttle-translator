@@ -10,6 +10,10 @@ namespace cuttle {
 		func_name,
 		string,
 		number,
+		macro_if,
+		macro_p,
+		macro_pf,
+		macro_ps,
 		unknown
 	};
 

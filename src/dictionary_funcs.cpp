@@ -81,9 +81,16 @@ tree_src_element_t cuttle::dictionary_funcs::apply_pattern_output(translate_stat
 tree_src_element_t
 cuttle::dictionary_funcs::apply_pattern_output(translate_state_t &state, tree_src_element_t index,
                                                const call_tree_t &output_tree, const tokens_t &output_tokens) {
-    tree_src_element_t new_arg_index, new_index = state.new_index++;
+    tree_src_element_t new_arg_index;
+    tree_src_element_t new_index;
+    if (index != output_tree.src.size() - 1) {
+        new_index = value(state, output_tokens[index].value, value_from_token_type(output_tokens[index].type));
+    } else {
+        new_index = value(state, CUTTLE_MERGE_WITH_PARENT_FUNC, value_type::func_name);
+    }
+
     for (const auto arg_index : output_tree.src[index]) {
-        token_t token = state.tokens[arg_index];
+        token_t token = output_tokens[arg_index];
         if (token.type == token_type::macro_p || token.type == token_type::macro_pf ||
             token.type == token_type::macro_ps
         ) {
