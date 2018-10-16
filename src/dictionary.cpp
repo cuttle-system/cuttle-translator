@@ -133,7 +133,9 @@ bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const token
         ++arg_number;
     }
     if (recursive_function_indexes.empty()) {
-        function_indexes = children_function_indexes;
+        if (!children_function_indexes.empty()) {
+            function_indexes = children_function_indexes;
+        }
     } else {
         function_indexes = recursive_function_indexes;
     }
@@ -154,6 +156,10 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
                     std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
     dictionary_element_t new_index = 0u;
     std::set<dictionary_element_t> function_indexes;
+    std::set<dictionary_element_t> root_args_function_indexes;
+    if (tokens[index].value == "<?php" && tokens.size() > 4) {
+        auto foo = new_index;
+    }
     if (index != TREE_SRC_ROOT_INDEX) {
         token_t token = tokens[index];
         for (auto &arg_sub_tree : dictionary.src[new_index]) {
@@ -181,6 +187,10 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
     if (result) {
         function_index = *prev(function_indexes.end());
         dfs(dictionary, function_index, tree, index, new_index, new_index_to_index);
+    } else if (!dictionary.functions_ended_on_index[new_index].empty()) {
+        function_index = *prev(dictionary.functions_ended_on_index[new_index].end());
+        dfs(dictionary, function_index, tree, index, new_index, new_index_to_index);
+        return true;
     }
     return result;
 }
