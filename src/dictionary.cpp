@@ -30,8 +30,8 @@ void inner_add(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t
         }
         if (dictionary.src[new_index][arg_number].find(token.type) != dictionary.src[child_new_index][arg_number].end()
             && dictionary.src[new_index][arg_number][token.type].find(token.value)
-                != dictionary.src[child_new_index][arg_number][token.type].end()
-        ) {
+               != dictionary.src[child_new_index][arg_number][token.type].end()
+                ) {
             child_new_index = dictionary.src[child_new_index][arg_number][token.type][token.value];
         } else {
             dictionary.src.emplace_back();
@@ -40,12 +40,12 @@ void inner_add(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t
         }
         dictionary.children[new_index][function_index].push_back(child_new_index);
         if ((token.type == token_type::macro_p
-                && dictionary.src[new_index][arg_number].find(token_type::macro_p)
+             && dictionary.src[new_index][arg_number].find(token_type::macro_p)
                 != dictionary.src[new_index][arg_number].end())
             || (token.type == token_type::macro_pf
                 && dictionary.src[new_index][arg_number].find(token_type::macro_pf)
-                != dictionary.src[new_index][arg_number].end())
-        ) {
+                   != dictionary.src[new_index][arg_number].end())
+                ) {
             dictionary.parameter_sets[new_index][arg_number].insert(function_index);
             dictionary.parameter_indexes[function_index].insert({token.value, child_new_index});
         }
@@ -86,17 +86,18 @@ bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const token
         if (dictionary.src[new_index].size() > arg_number) {
             if (dictionary.src[new_index][arg_number].find(token.type) != dictionary.src[new_index][arg_number].end()
                 && dictionary.src[new_index][arg_number][token.type].find(token.value)
-                    != dictionary.src[new_index][arg_number][token.type].end()
-            ) {
+                   != dictionary.src[new_index][arg_number][token.type].end()
+                    ) {
                 child_new_index = dictionary.src[child_new_index][arg_number][token.type][token.value];
                 if (!inner_lookup(dictionary, tree, tokens, arg_index, child_function_indexes, child_new_index)) {
                     child_function_indexes = {};
                 }
             } else if (dictionary.src[new_index][arg_number].find(token_type::macro_p)
-                    != dictionary.src[new_index][arg_number].end()
-                || (token.type == token_type::atom && dictionary.src[new_index][arg_number].find(token_type::macro_pf)
-                    != dictionary.src[new_index][arg_number].end())
-            ) {
+                       != dictionary.src[new_index][arg_number].end()
+                       || (token.type == token_type::atom &&
+                           dictionary.src[new_index][arg_number].find(token_type::macro_pf)
+                           != dictionary.src[new_index][arg_number].end())
+                    ) {
                 child_function_indexes = dictionary.parameter_sets[new_index][arg_number];
             } else {
                 child_function_indexes = {};
@@ -132,6 +133,9 @@ bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const token
 
         ++arg_number;
     }
+    if (first) {
+        recursive_function_indexes = dictionary.functions_ended_on_index[new_index];
+    }
     if (recursive_function_indexes.empty()) {
         if (!children_function_indexes.empty()) {
             function_indexes = children_function_indexes;
@@ -143,37 +147,39 @@ bool inner_lookup(dictionary_t &dictionary, const call_tree_t &tree, const token
 }
 
 void dfs(dictionary_t &dictionary, dictionary_element_t function_index, const call_tree_t &tree,
-        tree_src_element_t index, dictionary_element_t new_index,
-        std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
+         tree_src_element_t index, dictionary_element_t new_index,
+         std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
     new_index_to_index[new_index] = index;
     for (unsigned i = 0; i < dictionary.children[new_index][function_index].size(); ++i) {
-        dfs(dictionary, function_index, tree, tree.src[index][i], dictionary.children[new_index][function_index][i], new_index_to_index);
+        dfs(dictionary, function_index, tree, tree.src[index][i], dictionary.children[new_index][function_index][i],
+            new_index_to_index);
     }
 }
 
-bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens, tree_src_element_t index,
+bool cuttle::lookup(dictionary_t &dictionary,
+                    const call_tree_t &tree, const tokens_t &tokens, tree_src_element_t index,
                     dictionary_element_t &function_index,
                     std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
     dictionary_element_t new_index = 0u;
     std::set<dictionary_element_t> function_indexes;
     std::set<dictionary_element_t> root_args_function_indexes;
-    if (tokens[index].value == "<?php" && tokens.size() > 4) {
+    if (tokens[index].value == "(" && tokens.size() > 4) {
         auto foo = new_index;
     }
     if (index != TREE_SRC_ROOT_INDEX) {
         token_t token = tokens[index];
-        for (auto &arg_sub_tree : dictionary.src[new_index]) {
+        for (auto &arg_sub_tree : dictionary.src.front()) {
             if (arg_sub_tree.find(token.type) != arg_sub_tree.end()
-                && arg_sub_tree[token.type].find(token.value) != arg_sub_tree[token.type].end()
-            ) {
+                    && arg_sub_tree[token.type].find(token.value) != arg_sub_tree[token.type].end()) {
                 new_index = arg_sub_tree[token.type][token.value];
                 break;
-            } else if (token.type == token_type::atom && arg_sub_tree.find(token_type::macro_pf) != arg_sub_tree.end()) {
+            } else if (token.type == token_type::atom &&
+                       arg_sub_tree.find(token_type::macro_pf) != arg_sub_tree.end()) {
                 auto element_index = arg_sub_tree[token_type::macro_pf].begin()->second;
                 function_index = *dictionary.functions_ended_on_index[element_index].begin();
                 new_index_to_index[element_index] = index;
                 return true;
-            }  else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
+            } else if (arg_sub_tree.find(token_type::macro_p) != arg_sub_tree.end()) {
                 auto element_index = arg_sub_tree[token_type::macro_p].begin()->second;
                 function_index = *dictionary.functions_ended_on_index[element_index].begin();
                 new_index_to_index[element_index] = index;
