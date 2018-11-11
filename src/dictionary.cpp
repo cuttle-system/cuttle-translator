@@ -159,13 +159,10 @@ void dfs(dictionary_t &dictionary, dictionary_element_t function_index, const ca
 bool cuttle::lookup(dictionary_t &dictionary,
                     const call_tree_t &tree, const tokens_t &tokens, tree_src_element_t index,
                     dictionary_element_t &function_index,
-                    std::map<dictionary_element_t, tree_src_element_t> &new_index_to_index) {
+                    dictionary_index_to_index_t &new_index_to_index) {
     dictionary_element_t new_index = 0u;
     std::set<dictionary_element_t> function_indexes;
     std::set<dictionary_element_t> root_args_function_indexes;
-    if (tokens[index].value == "(" && tokens.size() > 4) {
-        auto foo = new_index;
-    }
     if (index != TREE_SRC_ROOT_INDEX) {
         token_t token = tokens[index];
         for (auto &arg_sub_tree : dictionary.src.front()) {

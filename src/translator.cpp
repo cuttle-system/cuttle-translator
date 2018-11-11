@@ -23,8 +23,9 @@ void cuttle::translate(
     tree_src_element_t new_index = 0;
     tree_src_element_t root_arg_index;
     index_reference_t index_reference;
+    dictionary_index_to_index_t dictionary_index_to_index;
 	translate_state_t state = {
-		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference, 0, {}
+		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference, 0, dictionary_index_to_index
 	};
 
 	for (auto index : tree.src.back()) {
