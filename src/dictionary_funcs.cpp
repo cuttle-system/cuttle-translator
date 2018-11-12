@@ -55,20 +55,16 @@ tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t &state) {
     state.index_reference[state.index] = index;
 
     for (auto arg_index : state.tree.src[state.index]) {
-        token_t token = state.tokens[arg_index];
+        if (arg_index == CALL_TREE_SRC_NIL) {
+            new_arg_index = CALL_TREE_SRC_NIL;
+        } else {
+            token_t token = state.tokens[arg_index];
             translate_state_t child_state = state;
             child_state.index = arg_index;
             new_arg_index = translate_function_call(child_state);
-//        if (token.type == token_type::atom) {
-//            translate_state_t child_state = state;
-//            child_state.index = arg_index;
-//            new_arg_index = translate_function_call(child_state);
-//        } else {
-//            new_arg_index = dictionary_funcs::value(state,
-//                                                    token.value, value_from_token_type(token.type));
-//        }
+            state.index_reference[arg_index] = new_arg_index;
+        }
         state.new_tree.src[index].push_back(new_arg_index);
-        state.index_reference[arg_index] = new_arg_index;
     }
 
     return index;
@@ -93,13 +89,17 @@ cuttle::dictionary_funcs::apply_pattern_output(translate_state_t &state, tree_sr
     }
 
     for (const auto arg_index : output_tree.src[index]) {
-        token_t token = output_tokens[arg_index];
-        if (token.type == token_type::macro_p || token.type == token_type::macro_pf ||
-            token.type == token_type::macro_ps
-        ) {
-            new_arg_index = parameter(state, token.value);
+        if (arg_index == CALL_TREE_SRC_NIL) {
+            new_arg_index = CALL_TREE_SRC_NIL;
         } else {
-            new_arg_index = apply_pattern_output(state, arg_index, output_tree, output_tokens);
+            token_t token = output_tokens[arg_index];
+            if (token.type == token_type::macro_p || token.type == token_type::macro_pf ||
+                token.type == token_type::macro_ps
+                    ) {
+                new_arg_index = parameter(state, token.value);
+            } else {
+                new_arg_index = apply_pattern_output(state, arg_index, output_tree, output_tokens);
+            }
         }
         state.new_tree.src[new_index].push_back(new_arg_index);
     }
