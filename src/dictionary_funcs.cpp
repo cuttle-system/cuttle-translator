@@ -1,9 +1,13 @@
 #include <utility>
 #include <vector>
+#include <sstream>
 
 #include "dictionary_funcs.hpp"
 #include "value_methods.hpp"
 #include "translator_methods.hpp"
+#include "interpreter.hpp"
+#include "vm_context_methods.hpp"
+#include "tree_utils.hpp"
 
 using namespace cuttle;
 
@@ -72,9 +76,23 @@ tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t &state) {
 
 tree_src_element_t cuttle::dictionary_funcs::apply_pattern_output(translate_state_t &state) {
     auto func_index = state.translate_function_index;
-    const auto &output_tree = state.dictionary.output_trees[func_index];
-    const auto &output_tokens = state.dictionary.output_tokens[func_index];
-    return apply_pattern_output(state, (tree_src_element_t) (output_tree.src.size() - 1), output_tree, output_tokens);
+    if (state.dictionary.output_trees.count(func_index)) {
+        const auto &output_tree = state.dictionary.output_trees[func_index];
+        const auto &output_tokens = state.dictionary.output_tokens[func_index];
+        return apply_pattern_output(state, (tree_src_element_t) (output_tree.src.size() - 1), output_tree, output_tokens);
+    } else {
+        std::stringstream ss;
+        ss.str(state.dictionary.vm_output_trees[func_index]);
+        call_tree_t output_tree;
+        tokens_t output_tokens;
+        std::deque<vm::value_t> arg_stack;
+        std::string global_context_name = CUTTLE_GLOBAL_CONTEXT_NAME;
+        auto global_context_value = vm::value_t{{vm::type_id::object}, (vm::any_t *) &state.contexts.global};
+        add(state.contexts.local, CUTTLE_GLOBAL_CONTEXT_NAME, global_context_value);
+        vm::interpret(ss, state.contexts.local, arg_stack);
+        construct_tree(state.contexts.local, arg_stack, output_tree, output_tokens);
+        return apply_pattern_output(state, (tree_src_element_t) (output_tree.src.size() - 1), output_tree, output_tokens);
+    }
 }
 
 tree_src_element_t

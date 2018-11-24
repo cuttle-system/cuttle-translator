@@ -20,21 +20,26 @@ struct translates_basic_function_call_suite_fixture {
         initialize(translator.dictionary);
         add(translator.dictionary,
             call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "plus"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+            tokens_t{{token_type::atom,    "plus"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "+");
-                auto a_i = dictionary_funcs::parameter(state, "_a");
-                auto b_i = dictionary_funcs::parameter(state, "_b");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
-        add(translator.dictionary, call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "-"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+                        auto func_i = dictionary_funcs::function_name(state, "+");
+                        auto a_i = dictionary_funcs::parameter(state, "_a");
+                        auto b_i = dictionary_funcs::parameter(state, "_b");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
+        add(translator.dictionary,
+            call_tree_t{{{1u, 2u}, {}, {}, {0}}},
+            tokens_t{{token_type::atom,    "-"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "minus");
-                auto a_i = dictionary_funcs::parameter(state, "_b");
-                auto b_i = dictionary_funcs::parameter(state, "_a");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
+                        auto func_i = dictionary_funcs::function_name(state, "minus");
+                        auto a_i = dictionary_funcs::parameter(state, "_b");
+                        auto b_i = dictionary_funcs::parameter(state, "_a");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
     }
 };
 
@@ -156,21 +161,26 @@ struct translates_nested_function_call_suite_fixture {
         initialize(translator.dictionary);
         add(translator.dictionary,
             call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "plus"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+            tokens_t{{token_type::atom,    "plus"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "+");
-                auto a_i = dictionary_funcs::parameter(state, "_a");
-                auto b_i = dictionary_funcs::parameter(state, "_b");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
-        add(translator.dictionary, call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "-"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+                        auto func_i = dictionary_funcs::function_name(state, "+");
+                        auto a_i = dictionary_funcs::parameter(state, "_a");
+                        auto b_i = dictionary_funcs::parameter(state, "_b");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
+        add(translator.dictionary,
+            call_tree_t{{{1u, 2u}, {}, {}, {0}}},
+            tokens_t{{token_type::atom,    "-"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "minus");
-                auto a_i = dictionary_funcs::parameter(state, "_b");
-                auto b_i = dictionary_funcs::parameter(state, "_a");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
+                        auto func_i = dictionary_funcs::function_name(state, "minus");
+                        auto a_i = dictionary_funcs::parameter(state, "_b");
+                        auto b_i = dictionary_funcs::parameter(state, "_a");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
     }
 };
 
@@ -238,38 +248,44 @@ struct translates_wildcard_function_call_suite_fixture {
 
     void setup() {
         initialize(translator.dictionary);
-        add(translator.dictionary,  call_tree_t{{{}, {0}}},
-            tokens_t{{token_type::macro_pf, "_func"}}, [](translate_state_t& state) {
-            namespace df = dictionary_funcs;
+        add(translator.dictionary,
+            call_tree_t{{{}, {0}}},
+            tokens_t{{token_type::macro_pf, "_func"}}, [](translate_state_t &state) {
+                    namespace df = dictionary_funcs;
 
-            unsigned int i;
-            if (state.index_reference.find(state.index) != state.index_reference.end()) {
-                i = state.index_reference[state.index];
-                state.values[i] = {"any_function_here", value_type::func_name};
-            } else {
-                i = df::function_name(state, "any_function_here");
-            }
+                    unsigned int i;
+                    if (state.index_reference.find(state.index) != state.index_reference.end()) {
+                        i = state.index_reference[state.index];
+                        state.values[i] = {"any_function_here", value_type::func_name};
+                    } else {
+                        i = df::function_name(state, "any_function_here");
+                    }
 
-            df::function(state, i, {});
-            return i;
-        });
+                    df::function(state, i, {});
+                    return i;
+                });
         add(translator.dictionary,
             call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "+"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+            tokens_t{{token_type::atom,    "+"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "+");
-                auto a_i = dictionary_funcs::parameter(state, "_a");
-                auto b_i = dictionary_funcs::parameter(state, "_b");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
-        add(translator.dictionary, call_tree_t{{{1u, 2u}, {}, {}, {0}}},
-            tokens_t{{token_type::atom, "-"}, {token_type::macro_p, "_a"}, {token_type::macro_p, "_b"}},
+                        auto func_i = dictionary_funcs::function_name(state, "+");
+                        auto a_i = dictionary_funcs::parameter(state, "_a");
+                        auto b_i = dictionary_funcs::parameter(state, "_b");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
+        add(translator.dictionary,
+            call_tree_t{{{1u, 2u}, {}, {}, {0}}},
+            tokens_t{{token_type::atom,    "-"},
+                     {token_type::macro_p, "_a"},
+                     {token_type::macro_p, "_b"}},
             [](translate_state_t &state) {
-                auto func_i = dictionary_funcs::function_name(state, "minus");
-                auto a_i = dictionary_funcs::parameter(state, "_a");
-                auto b_i = dictionary_funcs::parameter(state, "_b");
-                return dictionary_funcs::function(state, func_i, {a_i, b_i});
-            });
+                        auto func_i = dictionary_funcs::function_name(state, "minus");
+                        auto a_i = dictionary_funcs::parameter(state, "_a");
+                        auto b_i = dictionary_funcs::parameter(state, "_b");
+                        return dictionary_funcs::function(state, func_i, {a_i, b_i});
+                    });
     }
 };
 

@@ -27,8 +27,12 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
 endif()
 
+add_dependency(cuttle-parser)
+add_dependency(cuttle-vm)
+
 include_directories(
-        "../cuttle-parser/src")
+        "../cuttle-parser/src"
+        "../cuttle-vm/src")
 
 add_subdirectory(src)
 add_subdirectory(tests)

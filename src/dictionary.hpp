@@ -16,13 +16,17 @@ namespace cuttle {
     using dictionary_elements_t = std::map<token_type, std::map<std::string, dictionary_element_t> >;
 
     struct dictionary_t {
-        std::vector<std::vector<dictionary_elements_t> > src;
-		std::vector<std::set<dictionary_element_t> > functions_ended_on_index;
-        std::vector<std::vector<std::set<dictionary_element_t> > > parameter_sets;
-        std::vector<std::map<dictionary_element_t, std::vector<dictionary_element_t> > > children;
+        std::map<dictionary_element_t, call_tree_t> pattern_trees;
+        std::map<dictionary_element_t, tokens_t> pattern_tokens;
+        //        std::vector<std::vector<dictionary_elements_t> > src;
+//		std::vector<std::set<dictionary_element_t> > functions_ended_on_index;
+//        std::vector<std::vector<std::set<dictionary_element_t> > > parameter_sets;
+//        std::vector<std::map<dictionary_element_t, std::vector<dictionary_element_t> > > children;
         std::map<dictionary_element_t, std::map<std::string, dictionary_element_t> > parameter_indexes;
+        std::multimap<std::pair<int, int>, dictionary_element_t, std::greater<> > prioritized_functions;
         std::vector<translate_function_t *> translate_functions;
         std::map<dictionary_element_t, call_tree_t> output_trees;
+        std::map<dictionary_element_t, std::string> vm_output_trees;
         std::map<dictionary_element_t, tokens_t> output_tokens;
     };
 }
