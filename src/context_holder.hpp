@@ -4,7 +4,7 @@
 
 namespace cuttle {
     struct context_holder_t {
-        vm::context_t& global;
-        vm::context_t& local;
+        vm::context_t *global;
+        vm::context_t *local;
     };
 }

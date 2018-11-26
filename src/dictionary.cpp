@@ -66,10 +66,13 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
     if (dict_token.type == token_type::macro_p) {
         dictionary.parameter_indexes[function_index].insert({dict_token.value, dictionary_index});
         return true;
-    } else if (dict_token.type == token_type::macro_pf && token.type == token_type::atom) {
+    } else if (dict_token.type == token_type::macro_pf && token.type != token_type::string && token.type != token_type::number) {
         dictionary.parameter_indexes[function_index].insert({dict_token.value, dictionary_index});
         return true;
     } else if (dict_token.type == token.type && dict_token.value == token.value) {
+        if (tree.src[index].size() < dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
+            return false;
+        }
         for (tree_src_element_t i = 0; i < tree.src[index].size(); ++i) {
             if (i >= dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
                 return false;

@@ -49,12 +49,7 @@ tree_src_element_t cuttle::dictionary_funcs::function(translate_state_t &state,
 tree_src_element_t cuttle::dictionary_funcs::copy(translate_state_t &state) {
     token_t root_token = state.tokens[state.index];
     tree_src_element_t index;
-    if (root_token.type == token_type::atom) {
-        index = dictionary_funcs::function(
-                state, dictionary_funcs::function_name(state, root_token.value), {});
-    } else {
-        index = dictionary_funcs::value(state, root_token.value, value_from_token_type(root_token.type));
-    }
+    index = dictionary_funcs::value(state, root_token.value, value_from_token_type(root_token.type));
     tree_src_element_t new_arg_index;
     state.index_reference[state.index] = index;
 
@@ -88,9 +83,9 @@ tree_src_element_t cuttle::dictionary_funcs::apply_pattern_output(translate_stat
         std::deque<vm::value_t> arg_stack;
         std::string global_context_name = CUTTLE_GLOBAL_CONTEXT_NAME;
         auto global_context_value = vm::value_t{{vm::type_id::object}, (vm::any_t *) &state.contexts.global};
-        add(state.contexts.local, CUTTLE_GLOBAL_CONTEXT_NAME, global_context_value);
-        vm::interpret(ss, state.contexts.local, arg_stack);
-        construct_tree(state.contexts.local, arg_stack, output_tree, output_tokens);
+        add(*state.contexts.local, CUTTLE_GLOBAL_CONTEXT_NAME, global_context_value);
+        vm::interpret(ss, *state.contexts.local, arg_stack);
+        construct_tree(*state.contexts.local, arg_stack, output_tree, output_tokens);
         return apply_pattern_output(state, (tree_src_element_t) (output_tree.src.size() - 1), output_tree, output_tokens);
     }
 }
@@ -131,7 +126,7 @@ cuttle::dictionary_funcs::copy(translate_state_t &state, const std::vector<tree_
     for (auto &elem : elements) {
         auto child_state = state;
         child_state.index = elem;
-        copied.push_back(copy(child_state));
+        copied.push_back(translate_function_call(child_state));
     }
     return copied;
 }
