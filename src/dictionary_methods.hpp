@@ -13,7 +13,7 @@ namespace cuttle {
                                  translate_function_t *function, const call_tree_t &output_tree, const tokens_t &output_tokens);
 
     bool lookup(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens,
-                dictionary_index_to_index_t &dictionary_index_to_index, dictionary_element_t function_index,
+                dictionary_index_to_index_t &dictionary_index_to_index, ps_parameters_t &ps_parameters, dictionary_element_t function_index,
                 tree_src_element_t index, tree_src_element_t dictionary_index = TREE_SRC_ROOT_INDEX);
 
     void initialize(dictionary_t &dictionary);

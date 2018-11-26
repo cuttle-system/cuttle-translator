@@ -10,7 +10,8 @@ unsigned int cuttle::translate_function_call(translate_state_t &state) {
     for (auto prioritized_function_index : state.dictionary.prioritized_functions) {
         auto function_index = prioritized_function_index.second;
         state.dictionary_index_to_index.clear();
-        if (lookup(state.dictionary, state.tree, state.tokens, state.dictionary_index_to_index,
+        state.ps_parameters.clear();
+        if (lookup(state.dictionary, state.tree, state.tokens, state.dictionary_index_to_index, state.ps_parameters,
                    function_index, state.index)) {
             auto child_state = state;
             vm::context_t child_context;
@@ -20,6 +21,7 @@ unsigned int cuttle::translate_function_call(translate_state_t &state) {
             return child_state.dictionary.translate_functions[child_state.translate_function_index](child_state);
         }
     }
+    state.ps_parameters.clear();
     state.dictionary_index_to_index.clear();
     return dictionary_funcs::copy(state);
 }

@@ -23,11 +23,21 @@ tree_src_element_t cuttle::dictionary_funcs::function_name(translate_state_t &st
 }
 
 tree_src_element_t cuttle::dictionary_funcs::parameter(translate_state_t &state, const std::string &name) {
-    dictionary_element_t dictionary_index = state.dictionary.parameter_indexes[state.translate_function_index][name];
-    auto child_state = state;
-    child_state.index = state.dictionary_index_to_index[dictionary_index];
-    auto subtree_i = cuttle::translate_function_call(child_state);
-    return subtree_i;
+    if (state.ps_parameters.count(name)) {
+        tree_src_elements_t arg_indexes;
+        for (auto argi : state.ps_parameters[name]) {
+            auto child_state = state;
+            child_state.index = argi;
+            arg_indexes.push_back(cuttle::translate_function_call(child_state));
+        }
+        return function(state, function_name(state, CUTTLE_MERGE_WITH_PARENT_FUNC), arg_indexes);
+    } else {
+        dictionary_element_t dictionary_index = state.dictionary.parameter_indexes[state.translate_function_index][name];
+        auto child_state = state;
+        child_state.index = state.dictionary_index_to_index[dictionary_index];
+        auto subtree_i = cuttle::translate_function_call(child_state);
+        return subtree_i;
+    }
 }
 
 tree_src_element_t cuttle::dictionary_funcs::string(translate_state_t &state, const std::string &value) {
