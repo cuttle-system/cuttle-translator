@@ -33,9 +33,15 @@ tree_src_element_t cuttle::dictionary_funcs::parameter(translate_state_t &state,
         return function(state, function_name(state, CUTTLE_MERGE_WITH_PARENT_FUNC), arg_indexes);
     } else {
         dictionary_element_t dictionary_index = state.dictionary.parameter_indexes[state.translate_function_index][name];
-        auto child_state = state;
-        child_state.index = state.dictionary_index_to_index[dictionary_index];
-        auto subtree_i = cuttle::translate_function_call(child_state);
+        auto index = state.dictionary_index_to_index[dictionary_index];
+        tree_src_element_t subtree_i;
+        if (state.dictionary.pattern_tokens[state.translate_function_index][dictionary_index].type == macro_p) {
+            auto child_state = state;
+            child_state.index = index;
+            subtree_i = cuttle::translate_function_call(child_state);
+        } else {
+            subtree_i = value(state, state.tokens[index].value, value_from_token_type(state.tokens[index].type));
+        }
         return subtree_i;
     }
 }

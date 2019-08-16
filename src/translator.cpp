@@ -26,6 +26,21 @@ unsigned int cuttle::translate_function_call(translate_state_t &state) {
     return dictionary_funcs::copy(state);
 }
 
+void translator_copy_hot_places_nodes(cuttle::translate_state_t &state) {
+    using namespace cuttle;
+
+    for (const auto &pair : state.hot_places_destination) {
+        const auto key = pair.first;
+        const auto index = pair.second;
+
+        for (const auto &src_index : state.hot_places_source[key]) {
+            auto child_state = state;
+            state.index = src_index;
+            auto translate_function_call(child_state);
+        }
+    }
+}
+
 void cuttle::translate(
 	const translator_t &translator, const tokens_t &tokens, const call_tree_t &tree,
 	values_t &values, call_tree_t &new_tree
@@ -41,7 +56,10 @@ void cuttle::translate(
     populate(context);
     local_context.parent = &context;
 	translate_state_t state = {
-		dictionary, tokens, tree, 0, values, new_tree, new_index, index_reference, custom_state_num, {&context, &local_context}, 0, dictionary_index_to_index
+		dictionary, tokens, tree, 0, values,
+		new_tree, new_index, index_reference, custom_state_num,
+		{&context, &local_context}, 0, dictionary_index_to_index,
+        {}, {}, {}
 	};
 
 	for (auto index : tree.src.back()) {
@@ -50,6 +68,8 @@ void cuttle::translate(
         root_arg_index = translate_function_call(child_state);
         root_args.push_back(root_arg_index);
     }
+
+	translator_copy_hot_places_nodes(state);
 
     new_tree.src.push_back(root_args);
 }

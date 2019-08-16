@@ -250,7 +250,7 @@ struct translates_wildcard_function_call_suite_fixture {
         initialize(translator.dictionary);
         add(translator.dictionary,
             call_tree_t{{{}, {0}}},
-            tokens_t{{token_type::macro_pf, "_func"}}, [](translate_state_t &state) {
+            tokens_t{{token_type::macro_pva, "_func"}}, [](translate_state_t &state) {
                     namespace df = dictionary_funcs;
 
                     unsigned int i;

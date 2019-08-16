@@ -45,6 +45,64 @@ dictionary_element_t cuttle::add(dictionary_t &dictionary, const call_tree_t &pa
     return function_index;
 }
 
+bool lookup_children(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens,
+                     dictionary_index_to_index_t &dictionary_index_to_index, ps_parameters_t &ps_parameters, dictionary_element_t function_index,
+                     tree_src_element_t index, tree_src_element_t dictionary_index) {
+    int before_macro_ps = 0;
+    int after_macro_ps;
+    bool has_macro_ps = false;
+    std::string parameter_name;
+
+    for (tree_src_element_t i = 0; i < dictionary.pattern_trees[function_index].src[dictionary_index].size(); ++i) {
+        auto inner_index = dictionary.pattern_trees[function_index].src[dictionary_index][i];
+        if (dictionary.pattern_tokens[function_index][inner_index].type == token_type::macro_ps) {
+            has_macro_ps = true;
+            parameter_name = dictionary.pattern_tokens[function_index][inner_index].value;
+            break;
+        }
+        ++before_macro_ps;
+    }
+
+    after_macro_ps = ((tree_src_element_t) dictionary.pattern_trees[function_index].src[dictionary_index].size()) - before_macro_ps - 1;
+
+    if (has_macro_ps) {
+        ps_parameters[parameter_name] = {};
+        for (tree_src_element_t i = 0; i < before_macro_ps; ++i) {
+            if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters,
+                        function_index, tree.src[index][i],
+                        dictionary.pattern_trees[function_index].src[dictionary_index][i])) {
+                return false;
+            }
+        }
+
+        for (tree_src_element_t i = before_macro_ps; i < tree.src[index].size() - after_macro_ps; ++i) {
+            ps_parameters[parameter_name].push_back(tree.src[index][i]);
+        }
+
+        for (tree_src_element_t i = 0; i < after_macro_ps; --i) {
+            if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, tree.src[index][tree.src[index].size() - 1 - i],
+                        dictionary.pattern_trees[function_index].src[dictionary_index][before_macro_ps + 1 + i])) {
+                return false;
+            }
+        }
+    } else {
+        if (tree.src[index].size() < dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
+            return false;
+        }
+        for (tree_src_element_t i = 0; i < tree.src[index].size(); ++i) {
+            if (i >= dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
+                return false;
+            }
+
+            if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, tree.src[index][i],
+                        dictionary.pattern_trees[function_index].src[dictionary_index][i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tokens_t &tokens,
         dictionary_index_to_index_t &dictionary_index_to_index, ps_parameters_t &ps_parameters, dictionary_element_t function_index,
         tree_src_element_t index, tree_src_element_t dictionary_index) {
@@ -66,63 +124,21 @@ bool cuttle::lookup(dictionary_t &dictionary, const call_tree_t &tree, const tok
     if (dict_token.type == token_type::macro_p) {
         dictionary.parameter_indexes[function_index].insert({dict_token.value, dictionary_index});
         return true;
-    } else if (dict_token.type == token_type::macro_pf && token.type != token_type::string && token.type != token_type::number) {
+    } else if ((dict_token.type == token_type::macro_pva && token.type == token_type::atom)
+            || (dict_token.type == token_type::macro_pvn && token.type == token_type::number)
+            || (dict_token.type == token_type::macro_pvs && token.type == token_type::string)
+            || dict_token.type == token_type::macro_pv
+    ) {
         dictionary.parameter_indexes[function_index].insert({dict_token.value, dictionary_index});
         return true;
+    } else if (dict_token.type == token_type::macro_pf) {
+        bool found = lookup_children(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, index, dictionary_index);
+        if (found) {
+            dictionary.parameter_indexes[function_index].insert({dict_token.value, dictionary_index});
+        }
+        return found;
     } else if (dict_token.type == token.type && dict_token.value == token.value) {
-        int before_macro_ps = 0;
-        int after_macro_ps;
-        bool has_macro_ps = false;
-        std::string parameter_name;
-
-        for (tree_src_element_t i = 0; i < dictionary.pattern_trees[function_index].src[dictionary_index].size(); ++i) {
-            auto inner_index = dictionary.pattern_trees[function_index].src[dictionary_index][i];
-            if (dictionary.pattern_tokens[function_index][inner_index].type == token_type::macro_ps) {
-                has_macro_ps = true;
-                parameter_name = dictionary.pattern_tokens[function_index][inner_index].value;
-                break;
-            }
-            ++before_macro_ps;
-        }
-
-        after_macro_ps = ((tree_src_element_t) dictionary.pattern_trees[function_index].src[dictionary_index].size()) - before_macro_ps - 1;
-
-        if (has_macro_ps) {
-            ps_parameters[parameter_name] = {};
-            for (tree_src_element_t i = 0; i < before_macro_ps; ++i) {
-                if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters,
-                        function_index, tree.src[index][i],
-                            dictionary.pattern_trees[function_index].src[dictionary_index][i])) {
-                    return false;
-                }
-            }
-
-            for (tree_src_element_t i = before_macro_ps; i < tree.src[index].size() - after_macro_ps; ++i) {
-                ps_parameters[parameter_name].push_back(tree.src[index][i]);
-            }
-
-            for (tree_src_element_t i = 0; i < after_macro_ps; --i) {
-                if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, tree.src[index][tree.src[index].size() - 1 - i],
-                            dictionary.pattern_trees[function_index].src[dictionary_index][before_macro_ps + 1 + i])) {
-                    return false;
-                }
-            }
-        } else {
-            if (tree.src[index].size() < dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
-                return false;
-            }
-            for (tree_src_element_t i = 0; i < tree.src[index].size(); ++i) {
-                if (i >= dictionary.pattern_trees[function_index].src[dictionary_index].size()) {
-                    return false;
-                }
-
-                if (!lookup(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, tree.src[index][i],
-                            dictionary.pattern_trees[function_index].src[dictionary_index][i])) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return lookup_children(dictionary, tree, tokens, dictionary_index_to_index, ps_parameters, function_index, index, dictionary_index);
     }
 
     return false;

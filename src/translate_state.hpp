@@ -12,6 +12,8 @@ namespace cuttle {
 	using dictionary_index_to_index_t = std::map<dictionary_element_t, tree_src_element_t>;
 	using custom_state_num_t = std::map<std::string, long long>;
 	using ps_parameters_t = std::map<std::string, tree_src_elements_t>;
+	using hot_places_destination_t = std::map<std::string, tree_src_element_t>;
+	using hot_places_source_t = std::map<std::string, tree_src_elements_t>;
 	struct translate_state_t {
         dictionary_t &dictionary;
         const tokens_t &tokens;
@@ -26,5 +28,7 @@ namespace cuttle {
         dictionary_element_t translate_function_index;
 		dictionary_index_to_index_t dictionary_index_to_index;
         ps_parameters_t ps_parameters;
+		hot_places_destination_t hot_places_destination;
+		hot_places_source_t hot_places_source;
 	};
 }
